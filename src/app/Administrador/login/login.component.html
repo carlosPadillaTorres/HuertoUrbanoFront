@@ -1,0 +1,81 @@
+<div class="login-page-wrapper">
+  <div class="login-container">
+    <div class="login-left">
+      <div class="logo">TechGuardian Solutions</div>
+      <div class="welcome-text">¡Bienvenido de vuelta!</div>
+      <div class="welcome-subtitle">
+        Accede a tu cuenta para gestionar tus proyectos Arduino y explorar nuestras soluciones tecnológicas especializadas.
+      </div>
+    </div>
+
+    <div class="login-right">
+      <div class="form-container">
+        <div class="form-header">
+          <h2>Acceso a tu cuenta</h2>
+          <p>Ingresa tus credenciales para continuar</p>
+        </div>
+
+        <div class="form-tabs">
+          <div class="form-tab" [class.active]="activeTab === 'login'" (click)="switchTab('login')">Iniciar Sesión</div>
+          <div class="form-tab" [class.active]="activeTab === 'register'" (click)="switchTab('register')">Registrarse</div>
+        </div>
+
+        <div id="login-form" class="form-content" [class.active]="activeTab === 'login'">
+          <form #loginForm="ngForm" (ngSubmit)="handleLogin(loginForm)">
+            <div class="form-group">
+              <label for="login-email">Correo Electrónico</label>
+              <input type="email" id="login-email" name="email" [(ngModel)]="loginData.email" placeholder="tu@email.com" required>
+            </div>
+            <div class="form-group">
+              <label for="login-password">Contraseña</label>
+              <input type="password" id="login-password" name="password" [(ngModel)]="loginData.password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="form-button">Iniciar Sesión</button>
+            <div class="error-message" *ngIf="loginError">{{ loginError }}</div>
+            <div class="success-message" *ngIf="loginSuccess">{{ loginSuccess }}</div>
+          </form>
+          <div class="forgot-password">
+            <a href="#" (click)="showForgotPassword($event)">¿Olvidaste tu contraseña?</a>
+          </div>
+        </div>
+
+        <div id="register-form" class="form-content" [class.active]="activeTab === 'register'">
+          <form #registerForm="ngForm" (ngSubmit)="handleRegister(registerForm)">
+            <div class="form-group">
+              <label for="register-name">Nombre Completo</label>
+              <input type="text" id="register-name" name="name" [(ngModel)]="registerData.name" placeholder="Tu nombre completo" required>
+            </div>
+            <div class="form-group">
+              <label for="register-email">Correo Electrónico</label>
+              <input type="email" id="register-email" name="email" [(ngModel)]="registerData.email" placeholder="tu@email.com" required>
+            </div>
+            <div class="form-group">
+              <label for="register-password">Contraseña</label>
+              <input type="password" id="register-password" name="password" [(ngModel)]="registerData.password" placeholder="••••••••" required minlength="6">
+            </div>
+            <div class="form-group">
+              <label for="register-confirm">Confirmar Contraseña</label>
+              <input type="password" id="register-confirm" name="confirm" [(ngModel)]="registerData.confirm" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="form-button">Crear Cuenta</button>
+            <div class="error-message" *ngIf="registerError">{{ registerError }}</div>
+            <div class="success-message" *ngIf="registerSuccess">{{ registerSuccess }}</div>
+          </form>
+        </div>
+
+        <div class="divider">
+          <span>O continúa con</span>
+        </div>
+
+        <div class="social-login">
+          <button class="social-btn" (click)="socialLogin('google')">
+            <span>🔍</span> Google
+          </button>
+          <button class="social-btn" (click)="socialLogin('github')">
+            <span>⚫</span> GitHub
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

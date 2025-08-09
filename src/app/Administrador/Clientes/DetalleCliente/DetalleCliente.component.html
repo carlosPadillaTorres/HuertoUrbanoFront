@@ -1,0 +1,495 @@
+<style>
+  :host {
+    --teal: #00C4B4;
+    --gray-200: #D3D3D3;
+    --white: #FFFFFF;
+    --orange: #F5A623;
+    --dark-gray-footer: #00C4B4;
+    --light-gray-text: #FFFFFF;
+    --light-gray-line: #FFFFFF;
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  header {
+    background-color: var(--teal);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 60px;
+  }
+
+  header .brand {
+    display: flex;
+    align-items: center;
+  }
+
+  header .logo img {
+    max-height: 50px;
+    width: auto;
+    vertical-align: middle;
+    display: block;
+    margin-right: 10px;
+  }
+
+  header .brand-text {
+    color: var(--white);
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  header nav a {
+    color: var(--white);
+    margin-left: 20px;
+    text-decoration: none;
+    font-size: 1rem;
+  }
+
+  header nav a:hover {
+    text-decoration: underline;
+  }
+
+  header .login-btn {
+    background-color: var(--orange);
+    color: var(--white);
+    border: none;
+    padding: 5px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  header .login-btn:hover {
+    background-color: #e5941e;
+  }
+
+  .main-content {
+    text-align: center;
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  ngb-carousel {
+    max-width: 1100px;
+    margin: 0 auto 30px auto;
+  }
+
+  ngb-carousel .picsum-img-wrapper {
+    width: 100%;
+    padding-bottom: 42.85%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  ngb-carousel .picsum-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .carousel-caption {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: var(--white);
+    padding: 10px;
+    border-radius: 5px;
+  }
+
+  .section {
+    background-color: var(--gray-200);
+    padding: 30px 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  .cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+  }
+
+  .info-card {
+    background-color: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    width: 100%;
+    max-width: 320px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 250px;
+  }
+
+  .info-card h3 {
+    color: var(--teal);
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 1.3rem;
+  }
+
+  .info-card p,
+  .info-card ul {
+    color: #000000;
+    line-height: 1.5;
+    font-size: 0.95rem;
+    flex-grow: 1;
+    margin-bottom: 0;
+  }
+
+  .info-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .info-card ul li {
+    margin-bottom: 6px;
+    padding-left: 22px;
+    position: relative;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  .info-card ul li::before {
+    content: '•';
+    color: var(--orange);
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  .info-card.special-scroll-card {
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 15px;
+  }
+
+  .info-card.special-scroll-card ul {
+    flex-grow: 0;
+    overflow-y: auto;
+    max-height: calc(100% - 70px);
+  }
+
+
+  @media (max-width: 768px) {
+    .info-card {
+      max-width: 90%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .info-card {
+      padding: 20px;
+    }
+
+    .info-card h3 {
+      font-size: 1.2rem;
+    }
+
+    .info-card p,
+    .info-card ul li {
+      font-size: 0.9rem;
+    }
+  }
+
+  .cart-btn {
+    background-color: #00CC00;
+    color: var(--white);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 1rem;
+    z-index: 1000;
+  }
+
+  .cart-btn:hover {
+    background-color: #00b300;
+  }
+
+  footer {
+    background-color: var(--dark-gray-footer);
+    color: var(--light-gray-text);
+    padding: 40px 20px;
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 40px;
+  }
+
+  .footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    max-width: 1000px;
+    margin: 0 auto 30px auto;
+    text-align: left;
+  }
+
+  .footer-column {
+    flex: 1;
+    min-width: 200px;
+    margin: 15px;
+  }
+
+  .footer-column h4 {
+    color: var(--white);
+    margin-bottom: 20px;
+    font-size: 1rem;
+    text-transform: uppercase;
+  }
+
+  .footer-column p {
+    margin-bottom: 15px;
+  }
+
+  .footer-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .footer-column ul li {
+    margin-bottom: 10px;
+  }
+
+  .footer-column ul li a {
+    color: var(--light-gray-text);
+    text-decoration: none;
+  }
+
+  .footer-column ul li a:hover {
+    color: var(--teal);
+    text-decoration: underline;
+  }
+
+
+  .footer-bottom {
+    border-top: 1px solid var(--light-gray-line);
+    padding-top: 20px;
+    margin-top: 20px;
+    color: var(--light-gray-text);
+  }
+
+  @media (max-width: 768px) {
+    .footer-content {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .footer-column {
+      margin: 15px 0;
+      min-width: unset;
+      width: 100%;
+    }
+
+    .footer-column .social-icons,
+    .footer-column p {}
+  }
+
+  /* Estilos para el Dropdown del botón ADMIN */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: var(--white);
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  right: 0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.dropdown-content a:hover {
+  background-color: var(--gray-200);
+  cursor: pointer;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+</style>
+
+<app-barra-navegacion></app-barra-navegacion>
+
+
+<div class="client-detail-container">
+  <div class="header">
+    <button class="back-btn" (click)="goBack()">
+      ← Volver a la lista
+    </button>
+    <h1>Detalle del Cliente</h1>
+  </div>
+  @if (cliente) {
+  <div class="content">
+    <div class="left-section">
+      <div class="client-card">
+        <div class="client-avatar">
+          <div class="avatar-circle">
+            {{ cliente.nombre.charAt(0) }}{{ cliente.apellido.charAt(0) }}
+          </div>
+        </div>
+
+        <div class="client-header">
+          <h2>{{ cliente.nombre }} {{ cliente.apellido }}</h2>
+          <span class="status-badge">
+            {{ getStatusLabel(cliente.usuario.estatus.toString()) }}
+          </span>
+        </div>
+
+        <div class="client-details">
+          <div class="detail-item">
+            <span class="label">Género:</span>
+            <span class="value">{{ cliente.genero }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="label">Teléfono:</span>
+            <span class="value">{{ cliente.telefono }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="label">Email:</span>
+            <span class="value">{{ cliente.correo }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="label">Fecha de Nacimiento:</span>
+            <span class="value">{{ formatDate(cliente.fechaNacimiento) }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="label">Nombre de Usuario:</span>
+            <span class="value">{{ cliente.usuario.nombreUsuario }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="label">Fecha de Registro:</span>
+            <span class="value">{{ formatDate(cliente.usuario.fechaRegistro) }}</span>
+          </div>
+
+          <div class="detail-item address-item">
+            <span class="label">Domicilio:</span>
+            <div class="address">
+              <p>{{ cliente.direccion.calle }}</p>
+              <p>{{ cliente.direccion.ciudad }}, {{ cliente.direccion.estado }}</p>
+              <p>{{ cliente.direccion.domicilio }}, {{ cliente.direccion.pais }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-section">
+      <div class="purchases-section">
+        <h3>Historial de Compras</h3>
+
+        @if (!cargaCompras) {
+        <div class="purchases-list">
+          @for (compra of compras; track compra.id) {
+          <div class="purchase-card" [class.expanded]="isDetalleCompraExpandido(compra.id)">
+            <div class="purchase-header" (click)="togglePurchaseDetails(compra.id)">
+              <div class="purchase-info">
+                <h4>Compra #{{ compra.id.substring(0, 8) }}</h4>
+                <p class="purchase-date">{{ formatDate(compra.fechaCompra) }}</p>
+              </div>
+
+              <div class="purchase-summary">
+                <div class="purchase-total">{{ formatCurrency(compra.total) }}</div>
+                <span class="purchase-status">
+                  {{ getPurchaseStatusLabel(compra.estatus.toString()) }}
+                </span>
+              </div>
+
+              <div class="expand-icon">
+                <span [class.rotated]="isDetalleCompraExpandido(compra.id)">▼</span>
+              </div>
+            </div>
+
+            @if (isDetalleCompraExpandido(compra.id)) {
+            <div class="purchase-details">
+              <div class="items-list">
+                <h5>Productos:</h5>
+                @for (articulo of compra.detallesCompra; track articulo.id || $index) {
+                <div class="item-row">
+                  <span class="item-name">{{ articulo.nombreProducto }}</span>
+                  <span class="item-quantity">Cant: {{ articulo.cantidad }}</span>
+                  <span class="item-price">{{ formatCurrency(articulo.precioUnitario) }}</span>
+                  <span class="item-total">{{ formatCurrency(articulo.precioTotal) }}</span>
+                </div>
+                }
+              </div>
+
+              <div class="purchase-footer">
+                <div class="total-row">
+                  <span class="total-label">Total:</span>
+                  <span class="total-amount">{{ formatCurrency(compra.total) }}</span>
+                </div>
+              </div>
+            </div>
+            }
+          </div>
+          }
+        </div>
+        }
+
+        @if (cargaCompras) {
+        <div class="loading-purchases">
+          <div class="spinner"></div>
+          <p>Cargando compras...</p>
+        </div>
+        }
+
+        @if (!cargaCompras && compras.length === 0) {
+        <div class="empty-purchases">
+          <div class="empty-icon">🛍️</div>
+          <h4>Sin compras registradas</h4>
+          <p>Este cliente aún no ha realizado ninguna compra</p>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+  }
+
+
+  @if (cargando) {
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando información del cliente...</p>
+  </div>
+  }
+</div>

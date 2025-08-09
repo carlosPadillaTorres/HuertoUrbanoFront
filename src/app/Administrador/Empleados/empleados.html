@@ -1,0 +1,466 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+  crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<app-barra-navegacion></app-barra-navegacion>
+
+
+<main class="main-content">
+  <h1>Gestión de Empleados</h1>
+  <div class="table-container">
+    <table id="empleadosTable">
+      <thead>
+        <tr>
+          <th>Nombre Completo</th>
+          <th>Teléfono</th>
+          <th>Nombre de Usuario</th>
+          <th>Puesto</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let empleado of empleadosMostrados; trackBy: trackByIdEmpleado">
+          <td>{{ empleado.persona?.nombre }} {{ empleado.persona?.apellidoPaterno }} {{
+            empleado.persona?.apellidoMaterno }}</td>
+          <td>{{ empleado.persona?.telefono }}</td>
+          <td>{{ empleado.usuario?.nombreUsuario }}</td>
+          <td>{{ empleado.puesto }}</td>
+          <td>
+            <button class="ver" (click)="openViewModal(empleado)">Ver</button>
+            <!-- CAMBIO AQUÍ: El botón "Editar" solo se muestra si el empleado está activo -->
+            <button class="editar" (click)="openEditModal(empleado)" *ngIf="empleado.usuario?.estatus === 1">Editar</button>
+            <button
+              [ngClass]="{'eliminar': empleado.usuario?.estatus === 1, 'activar': empleado.usuario?.estatus === 0}"
+              (click)="toggleEmpleadoStatus(empleado)">
+              {{ empleado.usuario?.estatus === 1 ? 'Eliminar' : 'Activar' }}
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="empleadosMostrados.length === 0">
+          <td colspan="5" style="text-align: center;">No hay empleados para mostrar.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-actions">
+    <button class="cart-btn add-btn" (click)="openAddModal()">Agregar Empleado</button>
+    <button class="cart-btn toggle-btn" (click)="toggleMostrarInactivos()">
+      Ver {{ mostrarInactivos ? 'Activos' : 'Inactivos' }}
+    </button>
+  </div>
+
+  <div id="addModal" class="modal" [style.display]="showAddModal ? 'block' : 'none'">
+    <div class="modal-content">
+      <h2 class="modal-title">Agregar Empleado</h2>
+      <form #addForm="ngForm" (ngSubmit)="addEmpleado(addForm)">
+        <div class="form-columns">
+          <div class="form-group">
+            <label for="newNombre">Nombre:</label>
+            <input type="text" id="newNombre" name="newNombre" [(ngModel)]="newEmpleado.persona!.nombre" required>
+          </div>
+          <div class="form-group">
+            <label for="newApPaterno">Apellido Paterno:</label>
+            <input type="text" id="newApPaterno" name="newApPaterno" [(ngModel)]="newEmpleado.persona!.apellidoPaterno"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="newApMaterno">Apellido Materno:</label>
+            <input type="text" id="newApMaterno" name="newApMaterno" [(ngModel)]="newEmpleado.persona!.apellidoMaterno"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="newCurp">CURP:</label>
+            <input type="text" id="newCurp" name="newCurp" [(ngModel)]="newEmpleado.curp" required>
+          </div>
+          <div class="form-group">
+            <label for="newRfc">RFC:</label>
+            <input type="text" id="newRfc" name="newRfc" [(ngModel)]="newEmpleado.rfc" required>
+          </div>
+          <div class="form-group">
+            <label for="newGenero">Género:</label>
+            <select id="newGenero" name="newGenero" [(ngModel)]="newEmpleado.persona!.genero" required>
+              <option value="O">Otro</option>
+              <option value="H">Hombre</option>
+              <option value="M">Mujer</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="newPuesto">Puesto:</label>
+            <input type="text" id="newPuesto" name="newPuesto" [(ngModel)]="newEmpleado.puesto" required>
+          </div>
+          <div class="form-group">
+            <label for="newTelefono">Teléfono:</label>
+            <input type="text" id="newTelefono" name="newTelefono" [(ngModel)]="newEmpleado.persona!.telefono" required>
+          </div>
+          <div class="form-group">
+            <label for="newSalarioBruto">Salario Bruto:</label>
+            <input type="number" id="newSalarioBruto" name="newSalarioBruto" [(ngModel)]="newEmpleado.salarioBruto"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="newEmail">Email:</label>
+            <input type="email" id="newEmail" name="newEmail" [(ngModel)]="newEmpleado.persona!.email" required>
+          </div>
+          <div class="form-group">
+            <label for="newFechaNacimiento">Fecha de Nacimiento:</label>
+            <input type="date" id="newFechaNacimiento" name="newFechaNacimiento"
+              [(ngModel)]="newEmpleado.persona!.fechaNacimiento" required>
+          </div>
+          <div class="form-group">
+            <label for="newFechaIngreso">Fecha de Ingreso:</label>
+            <input type="date" id="newFechaIngreso" name="newFechaIngreso" [(ngModel)]="newEmpleado.fechaIngreso"
+              required [readonly]="true">
+          </div>
+
+          <div class="form-group">
+            <label for="newEstado">Estado:</label>
+            <select id="newEstado" name="newEstado" [(ngModel)]="selectedEstadoId" (change)="filterCitiesByState(false)"
+              required>
+              <option [ngValue]="undefined" disabled>Seleccione un estado</option>
+              <option *ngFor="let estado of estados" [ngValue]="estado.idEstado">{{ estado.nombreEstado }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="newCiudad">Ciudad:</label>
+            <select id="newCiudad" name="newCiudad" [(ngModel)]="newEmpleado.persona!.domicilio!.idCiudad" required>
+              <option [ngValue]="0" disabled>Seleccione una ciudad</option>
+              <option *ngFor="let ciudad of ciudadesFiltradas" [ngValue]="ciudad.idCiudad">{{ ciudad.nombreCiudad }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="newCodigoPostal">Código Postal:</label>
+            <input type="text" id="newCodigoPostal" name="newCodigoPostal"
+              [(ngModel)]="newEmpleado.persona!.domicilio!.codigoPostal" required>
+          </div>
+          <div class="form-group">
+            <label for="newColonia">Colonia:</label>
+            <input type="text" id="newColonia" name="newColonia" [(ngModel)]="newEmpleado.persona!.domicilio!.colonia"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="newCalle">Calle:</label>
+            <input type="text" id="newCalle" name="newCalle" [(ngModel)]="newEmpleado.persona!.domicilio!.calle"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="newNumero">Número:</label>
+            <input type="text" id="newNumero" name="newNumero" [(ngModel)]="newEmpleado.persona!.domicilio!.numero"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="newRol">Rol:</label>
+            <select id="newRol" name="newRol" [(ngModel)]="newEmpleado.usuario!.idRol" required>
+              <option value="ADMS">Administrador</option>
+              <option value="EMPL">Empleado</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="newNombreUsuario">Nombre de Usuario:</label>
+            <input type="text" id="newNombreUsuario" name="newNombreUsuario"
+              [(ngModel)]="newEmpleado.usuario!.nombreUsuario" required>
+          </div>
+          <div class="form-group">
+            <label for="newContrasenia">Contraseña:</label>
+            <input type="password" id="newContrasenia" name="newContrasenia"
+              [(ngModel)]="newEmpleado.usuario!.contrasenia" required>
+          </div>
+        </div>
+        <br>
+        <div class="centered-buttons">
+          <button type="submit" class="guardar" [disabled]="!addForm.valid">Guardar</button>
+          <button type="button" class="limpiar" (click)="clearAddFormFields()">Limpiar campos</button>
+          <button type="button" class="cancelar" (click)="closeAddModal()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="viewModal" class="modal" [style.display]="showViewModal ? 'block' : 'none'">
+    <div class="modal-content">
+      <h2 class="modal-title">Detalles del Empleado</h2>
+      <form *ngIf="selectedEmpleado">
+        <div class="form-columns">
+          <div class="form-group">
+            <label for="viewNombre">Nombre:</label>
+            <input type="text" id="viewNombre" [value]="selectedEmpleado.persona?.nombre" readonly>
+          </div>
+          <div class="form-group">
+            <label for="viewApPaterno">Apellido Paterno:</label>
+            <input type="text" id="viewApPaterno" [value]="selectedEmpleado.persona?.apellidoPaterno" readonly>
+          </div>
+          <div class="form-group">
+            <label for="viewApMaterno">Apellido Materno:</label>
+            <input type="text" id="viewApMaterno" [value]="selectedEmpleado.persona?.apellidoMaterno" readonly>
+          </div>
+          <div class="form-group">
+            <label for="viewCurp">CURP:</label>
+            <input type="text" id="viewCurp" [value]="selectedEmpleado.curp" readonly>
+          </div>
+          <div class="form-group">
+            <label for="viewRfc">RFC:</label>
+            <input type="text" id="viewRfc" [value]="selectedEmpleado.rfc" readonly>
+          </div>
+          <div class="form-group">
+            <label for="viewGenero">Género:</label>
+            <input type="text" id="viewGenero"
+              [value]="selectedEmpleado.persona?.genero === 'H' ? 'Hombre' : selectedEmpleado.persona?.genero === 'M' ? 'Mujer' : 'Otro'"
+              readonly>
+          </div>
+
+          <div class="form-group">
+            <label for="viewPuesto">Puesto:</label>
+            <input type="text" id="viewPuesto" [value]="selectedEmpleado.puesto" readonly>
+          </div>
+          <div class="form-group">
+            <label for="viewTelefono">Teléfono:</label>
+            <input type="text" id="viewTelefono" [value]="selectedEmpleado.persona?.telefono" readonly>
+          </div>
+          <div class="form-group">
+            <label for="viewSalarioBruto">Salario Bruto:</label>
+            <input type="text" id="viewSalarioBruto"
+              [value]="selectedEmpleado.salarioBruto | currency:'MXN':'symbol':'1.2-2'" readonly>
+          </div>
+          <div class="form-group">
+            <label for="viewEmail">Email:</label>
+            <input type="email" id="viewEmail" [value]="selectedEmpleado.persona?.email" readonly>
+          </div>
+          <div class="form-group">
+            <label for="viewFechaNacimiento">Fecha de Nacimiento:</label>
+            <input type="date" id="viewFechaNacimiento" [value]="selectedEmpleado.persona?.fechaNacimiento" readonly>
+          </div>
+          <div class="form-group">
+            <label for="viewFechaIngreso">Fecha de Ingreso:</label>
+            <input type="date" id="viewFechaIngreso" [value]="selectedEmpleado.fechaIngreso" readonly>
+          </div>
+          <div class="form-group" *ngIf="selectedEmpleado.fechaRenuncia">
+            <label for="viewFechaRenuncia">Fecha de Renuncia:</label>
+            <input type="date" id="viewFechaRenuncia" [value]="selectedEmpleado.fechaRenuncia" readonly>
+          </div>
+
+          <div class="form-group">
+            <label for="viewEstado">Estado:</label>
+            <input type="text" id="viewEstado"
+              [value]="getCiudadById(selectedEmpleado.persona?.domicilio?.idCiudad || 0)?.estado?.idEstado"
+              readonly>
+          </div>
+          <div class="form-group">
+            <label for="viewCiudad">Ciudad:</label>
+            <input type="text" id="viewCiudad"
+              [value]="getCiudadById(selectedEmpleado.persona?.domicilio?.idCiudad || 0)?.nombreCiudad || 'N/A'" readonly>
+          </div>
+          <div class="form-group">
+            <label for="viewCodigoPostal">Código Postal:</label>
+            <input type="text" id="viewCodigoPostal" [value]="selectedEmpleado.persona?.domicilio?.codigoPostal"
+              readonly>
+          </div>
+          <div class="form-group">
+            <label for="viewColonia">Colonia:</label>
+            <input type="text" id="viewColonia" [value]="selectedEmpleado.persona?.domicilio?.colonia" readonly>
+          </div>
+          <div class="form-group">
+            <label for="viewCalle">Calle:</label>
+            <input type="text" id="viewCalle" [value]="selectedEmpleado.persona?.domicilio?.calle" readonly>
+          </div>
+          <div class="form-group">
+            <label for="viewNumero">Número:</label>
+            <input type="text" id="viewNumero" [value]="selectedEmpleado.persona?.domicilio?.numero" readonly>
+          </div>
+
+          <div class="form-group">
+            <label for="viewNombreUsuario">Nombre de Usuario:</label>
+            <input type="text" id="viewNombreUsuario" [value]="selectedEmpleado.usuario?.nombreUsuario" readonly>
+          </div>
+          <div class="form-group">
+            <label for="viewRol">Rol:</label>
+            <input type="text" id="viewRol" [value]="selectedEmpleado.usuario?.idRol" readonly>
+          </div>
+        </div>
+      </form>
+      <br>
+      <div class="buttons" style="text-align: center; margin-top: 20px;">
+        <button type="button" class="cancelar" (click)="closeViewModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="editModal" class="modal" [style.display]="showeditModal ? 'block' : 'none'">
+    <div class="modal-content">
+      <h2 class="modal-title">Detalles del Empleado</h2>
+      <form *ngIf="selectedEmpleado" #editForm="ngForm" (ngSubmit)="updateEmpleado(editForm)"> <!-- Agregado (ngSubmit) -->
+        <div class="form-columns">
+          <div class="form-group">
+            <label for="editNombre">Nombre:</label>
+            <!-- CAMBIO: Eliminado readonly y añadido [(ngModel)] y name -->
+            <input type="text" id="editNombre" name="editNombre" [(ngModel)]="selectedEmpleado.persona!.nombre" required>
+          </div>
+          <div class="form-group">
+            <label for="editApPaterno">Apellido Paterno:</label>
+            <!-- CAMBIO: Eliminado readonly y añadido [(ngModel)] y name -->
+            <input type="text" id="editApPaterno" name="editApPaterno" [(ngModel)]="selectedEmpleado.persona!.apellidoPaterno" required>
+          </div>
+          <div class="form-group">
+            <label for="editApMaterno">Apellido Materno:</label>
+            <!-- CAMBIO: Eliminado readonly y añadido [(ngModel)] y name -->
+            <input type="text" id="editApMaterno" name="editApMaterno" [(ngModel)]="selectedEmpleado.persona!.apellidoMaterno" required>
+          </div>
+          <div class="form-group">
+            <label for="editCurp">CURP:</label>
+            <!-- Mantenido readonly porque CURP y RFC no suelen editarse -->
+            <input type="text" id="editCurp" [value]="selectedEmpleado.curp" readonly>
+          </div>
+          <div class="form-group">
+            <label for="editRfc">RFC:</label>
+            <!-- Mantenido readonly -->
+            <input type="text" id="editRfc" [value]="selectedEmpleado.rfc" readonly>
+          </div>
+          <div class="form-group">
+            <label for="editGenero">Género:</label>
+            <!-- CAMBIO: Convertido a select para edición de género -->
+            <select id="editGenero" name="editGenero" [(ngModel)]="selectedEmpleado.persona!.genero" required>
+              <option value="H">Hombre</option>
+              <option value="M">Mujer</option>
+              <option value="O">Otro</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="editPuesto">Puesto:</label>
+            <!-- CAMBIO: Eliminado readonly y añadido [(ngModel)] y name -->
+            <input type="text" id="editPuesto" name="editPuesto" [(ngModel)]="selectedEmpleado.puesto" required>
+          </div>
+          <div class="form-group">
+            <label for="editTelefono">Teléfono:</label>
+            <!-- CAMBIO: Eliminado readonly y añadido [(ngModel)] y name -->
+            <input type="text" id="editTelefono" name="editTelefono" [(ngModel)]="selectedEmpleado.persona!.telefono" required>
+          </div>
+          <div class="form-group">
+            <label for="editSalarioBruto">Salario Bruto:</label>
+            <!-- CAMBIO: Eliminado readonly y añadido [(ngModel)] y name, tipo number -->
+            <input type="number" id="editSalarioBruto" name="editSalarioBruto" [(ngModel)]="selectedEmpleado.salarioBruto" required>
+          </div>
+          <div class="form-group">
+            <label for="editEmail">Email:</label>
+            <!-- CAMBIO: Eliminado readonly y añadido [(ngModel)] y name -->
+            <input type="email" id="editEmail" name="editEmail" [(ngModel)]="selectedEmpleado.persona!.email" required>
+          </div>
+          <div class="form-group">
+            <label for="editFechaNacimiento">Fecha de Nacimiento:</label>
+            <!-- CAMBIO: Eliminado readonly y añadido [(ngModel)] y name -->
+            <input type="date" id="editFechaNacimiento" name="editFechaNacimiento" [(ngModel)]="selectedEmpleado.persona!.fechaNacimiento" required>
+          </div>
+          <div class="form-group">
+            <label for="editFechaIngreso">Fecha de Ingreso:</label>
+            <!-- Mantenido readonly, ya que la fecha de ingreso no suele editarse -->
+            <input type="date" id="editFechaIngreso" [value]="selectedEmpleado.fechaIngreso" readonly>
+          </div>
+
+          <div class="form-group">
+            <label for="editEstado">Estado:</label>
+            <!-- CAMBIO: Convertido a select para edición de estado -->
+            <select id="editEstado" name="editEstado" [(ngModel)]="selectedEstadoIdEdit" (change)="filterCitiesByState(true)" required>
+              <option [value]="undefined" disabled selected>Selecciona un estado</option>
+              <option *ngFor="let estado of estados" [value]="estado.idEstado">{{ estado.nombreEstado }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="editCiudad">Ciudad:</label>
+            <!-- CAMBIO: Convertido a select para edición de ciudad -->
+            <select id="editCiudad" name="editCiudad" [(ngModel)]="selectedEmpleado.persona!.domicilio!.idCiudad" required>
+              <option [value]="0" disabled selected>Selecciona una ciudad</option>
+              <option *ngFor="let ciudad of ciudadesFiltradasEdit" [value]="ciudad.idCiudad">{{ ciudad.nombreCiudad }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="editCodigoPostal">Código Postal:</label>
+            <!-- CAMBIO: Eliminado readonly y añadido [(ngModel)] y name -->
+            <input type="text" id="editCodigoPostal" name="editCodigoPostal" [(ngModel)]="selectedEmpleado.persona!.domicilio!.codigoPostal" required>
+          </div>
+          <div class="form-group">
+            <label for="editColonia">Colonia:</label>
+            <!-- CAMBIO: Eliminado readonly y añadido [(ngModel)] y name -->
+            <input type="text" id="editColonia" name="editColonia" [(ngModel)]="selectedEmpleado.persona!.domicilio!.colonia" required>
+          </div>
+          <div class="form-group">
+            <label for="editCalle">Calle:</label>
+            <!-- CAMBIO: Eliminado readonly y añadido [(ngModel)] y name -->
+            <input type="text" id="editCalle" name="editCalle" [(ngModel)]="selectedEmpleado.persona!.domicilio!.calle" required>
+          </div>
+          <div class="form-group">
+            <label for="editNumero">Número:</label>
+            <!-- CAMBIO: Eliminado readonly y añadido [(ngModel)] y name -->
+            <input type="text" id="editNumero" name="editNumero" [(ngModel)]="selectedEmpleado.persona!.domicilio!.numero" required>
+          </div>
+
+          <div class="form-group">
+            <label for="editNombreUsuario">Nombre de Usuario:</label>
+            <!-- CAMBIO: Eliminado readonly y añadido [(ngModel)] y name -->
+            <input type="text" id="editNombreUsuario" name="editNombreUsuario" [(ngModel)]="selectedEmpleado.usuario!.nombreUsuario" required>
+          </div>
+
+          <div class="form-group">
+            <label for="editContrasenia">Contraseña:</label>
+            <!-- CAMBIO: Eliminado readonly y añadido [(ngModel)] y name. Considera si realmente quieres que la contraseña sea editable así. -->
+            <input type="password" id="editContrasenia" name="editContrasenia" [(ngModel)]="selectedEmpleado.usuario!.contrasenia">
+          </div>
+
+          <div class="form-group">
+              <label for="newRol">Rol:</label>
+              <select id="newRol" name="newRol" [(ngModel)]="newEmpleado.usuario!.idRol" required>
+                <option value="ADMS">Administrador</option>
+                <option value="EMPL">Empleado</option>
+              </select>
+            </div>
+        </div>
+        <br>
+        <div class="buttons" style="text-align: center; margin-top: 20px;">
+          <!-- CAMBIO: Agregado (click) para llamar a updateEmpleado y asegurarse que el submit funcione -->
+          <button type="submit" class="guardar" [disabled]="!editForm.valid" (click)="updateEmpleado(editForm)">Actualizar</button>
+          <button type="button" class="cancelar" (click)="closeeditModal()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-content">
+    <div class="footer-column">
+      <h4>TechGuardian Solutions</h4>
+      <p>Tu tienda especializada en productos Arduino y componentes electrónicos para todos tus proyectos.</p>
+    </div>
+    <div class="footer-column">
+      <h4>Enlaces rápidos</h4>
+      <ul>
+        <li><a href="#">Inicio</a></li>
+        <li><a href="#">Productos</a></li>
+        <li><a href="#">Kits</a></li>
+        <li><a href="#">Tutoriales</a></li>
+        <li><a href="#">Contacto</a></li>
+      </ul>
+    </div>
+    <div class="footer-column">
+      <h4>Ayuda</h4>
+      <ul>
+        <li><a href="#">FAC</a></li>
+        <li><a href="#">Envíos</a></li>
+        <li><a href="#">Devoluciones</a></li>
+        <li><a href="#">Garantía</a></li>
+        <li><a href="#">Política de privacidad</a></li>
+      </ul>
+    </div>
+    <div class="footer-column">
+      <h4>Contacto</h4>
+      <p>Calle San Cristobal, 123</p>
+      <p>+34 912 345 678</p>
+      <p>infotechguardiansolutions.com</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 TechGuardian Solutions - Todos los derechos reservados</p>
+  </div>
+</footer>

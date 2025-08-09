@@ -1,0 +1,255 @@
+<app-barra-navegacion></app-barra-navegacion>
+
+
+<main class="main-content">
+  <div class="page-header-with-back">
+    <button class="back-to-list-btn" (click)="volverAProveedores()">
+      ← Volver a la lista
+    </button>
+    <h1>Productos del Proveedor</h1>
+  </div>
+
+  <div *ngIf="rfcProveedor">
+    <p>Mostrando productos para: <strong>{{ nombreEmpresa || rfcProveedor }}</strong></p>
+
+    <div class="table-container">
+      <table id="productosTable">
+        <thead>
+          <tr>
+            <th>Nombre del Producto</th>
+            <th>Marca</th>
+            <th>Tipo</th>
+            <th>Existencia</th>
+            <th>Costo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="productosMostrados.length > 0">
+            <tr *ngFor="let producto of productosMostrados">
+              <td>{{ producto.nombreProducto }}</td>
+              <td>{{ producto.marca }}</td>
+              <td>{{ getTipoNombre(producto.tipo) }}</td>
+              <td>{{ producto.cantidadTotal }}</td>
+              <td>{{ producto.costoUnidad | currency:'USD':'symbol':'1.2-2' }}</td>
+              <td>
+                <button class="action-btn view-btn"
+                  (click)="verProducto(producto); $event.stopPropagation()">Ver</button>
+                <button *ngIf="mostrarActivos" class="action-btn edit-btn"
+                  (click)="editarProducto(producto); $event.stopPropagation()">Editar</button>
+                <button class="action-btn" [ngClass]="{'delete-btn': mostrarActivos, 'activate-btn': !mostrarActivos}"
+                  (click)="mostrarActivos ? eliminarProducto(producto) : activarProducto(producto); $event.stopPropagation()">
+                  {{ mostrarActivos ? 'Eliminar' : 'Activar' }}
+                </button>
+              </td>
+            </tr>
+          </ng-container>
+          <tr *ngIf="productosMostrados.length === 0">
+            <td colspan="6" style="text-align: center; padding: 20px;">
+              No se encontraron productos {{ mostrarActivos ? 'activos' : 'eliminados' }} para este proveedor.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    </div>
+  <div *ngIf="!rfcProveedor">
+    <p>Selecciona un proveedor de la tabla para ver sus productos.</p>
+  </div>
+  <br>
+
+  <div class="bottom-actions-container">
+
+    <button class="cart-btn add-btn" (click)="openAddModal()">Agregar Producto</button>
+
+    <button class="cart-btn toggle-btn" (click)="toggleMostrarActivos()">
+      Ver {{ mostrarActivos ? 'Eliminados' : 'Activos' }}
+    </button>
+  </div>
+
+<!-- Modal ver -->
+  <div class="modal-overlay" *ngIf="isViewModalOpen">
+    <div class="modal-content">
+      <h2>Detalles del Producto</h2>
+      <div *ngIf="selectedProduct">
+        <div class="form-columns">
+          <div class="form-group">
+            <label>Proveedor:</label>
+            <input type="text" [value]="nombreEmpresa" readonly>
+          </div>
+          <div class="form-group">
+            <label>Nombre:</label>
+            <input type="text" [value]="selectedProduct.nombreProducto" readonly>
+          </div>
+          <div class="form-group">
+            <label>Marca:</label>
+            <input type="text" [value]="selectedProduct.marca" readonly>
+          </div>
+          <div class="form-group">
+            <label>Tipo:</label>
+            <input type="text" [value]="getTipoNombre(selectedProduct.tipo)" readonly>
+          </div>
+          <div class="form-group">
+            <label>Existencia:</label>
+            <input type="number" [value]="selectedProduct.cantidadTotal" readonly>
+          </div>
+          <div class="form-group">
+            <label>Costo:</label>
+            <input type="text" [value]="selectedProduct.costoUnidad | currency:'USD':'symbol':'1.2-2'" readonly>
+          </div>
+          <div class="form-group">
+            <label>Estatus:</label>
+            <input type="text" [value]="selectedProduct.estatus === '1' ? 'Activo' : 'Inactivo'" readonly>
+          </div>
+          <div class="form-group full-width">
+            <label>Descripción:</label>
+            <textarea [value]="selectedProduct.descripcion" readonly rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+      <button (click)="closeViewModal()">Cerrar</button>
+    </div>
+  </div>
+<!-- Modal editar -->
+  <div class="modal-overlay" *ngIf="isEditModalOpen">
+    <div class="modal-content">
+      <h2>Editar Producto</h2>
+      <form #editProductForm="ngForm" (ngSubmit)="saveEditedProduct(editProductForm)">
+        <div *ngIf="editFormProduct" class="form-columns">
+          <div class="form-group">
+            <label>Proveedor:</label>
+            <input type="text" [value]="nombreEmpresa" readonly>
+            <input type="hidden" name="rfcProveedor" [(ngModel)]="editFormProduct.rfcProveedor">
+          </div>
+          <div class="form-group">
+            <label for="editNombreProducto">Nombre del Producto:</label>
+            <input type="text" id="editNombreProducto" name="nombreProducto"
+              [(ngModel)]="editFormProduct.nombreProducto" required>
+          </div>
+          <div class="form-group">
+            <label for="editMarca">Marca:</label>
+            <input type="text" id="editMarca" name="marca" [(ngModel)]="editFormProduct.marca" required>
+          </div>
+          <div class="form-group">
+            <label for="editTipo">Tipo:</label>
+            <select id="editTipo" name="tipo" [(ngModel)]="editFormProduct.tipo" required>
+              <option value="KIT">KIT COMPLETO</option>
+              <option value="ACT">ACTUADOR</option>
+              <option value="SEN">SENSOR</option>
+              <option value="OTR">OTRO</option>
+              <option value="PLA">PLACA</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="editCantidadTotal">Existencia:</label>
+            <input type="number" id="editCantidadTotal" name="cantidadTotal" [(ngModel)]="editFormProduct.cantidadTotal"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="editCostoUnidad">Costo:</label>
+            <input type="number" id="editCostoUnidad" name="costoUnidad" [(ngModel)]="editFormProduct.costoUnidad"
+              required step="0.01">
+          </div>
+          <div class="form-group full-width">
+            <label for="editDescripcion">Descripción:</label>
+            <textarea id="editDescripcion" name="descripcion" [(ngModel)]="editFormProduct.descripcion"
+              rows="3"></textarea>
+          </div>
+        </div>
+        <button type="submit" [disabled]="!editProductForm.form.valid">Actualizar</button>
+        <button type="button" (click)="closeEditModal()">Cancelar</button>
+      </form>
+    </div>
+  </div>
+<!-- Modal agregar -->
+  <div class="modal-overlay" *ngIf="isAddModalOpen">
+    <div class="modal-content">
+      <h2>Agregar Producto</h2>
+      <form #addProductForm="ngForm" (ngSubmit)="saveNewProduct(addProductForm)">
+        <div class="form-columns">
+          <div class="form-group">
+            <label>Proveedor:</label>
+            <input type="text" [value]="nombreEmpresa" readonly>
+            <input type="hidden" name="rfcProveedor" [(ngModel)]="newProduct.rfcProveedor">
+          </div>
+          <div class="form-group">
+            <label for="addNombreProducto">Nombre del Producto:</label>
+            <input type="text" id="addNombreProducto" name="nombreProducto" [(ngModel)]="newProduct.nombreProducto"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="addMarca">Marca:</label>
+            <input type="text" id="addMarca" name="marca" [(ngModel)]="newProduct.marca" required>
+          </div>
+          <div class="form-group">
+            <label for="addTipo">Tipo:</label>
+            <select id="addTipo" name="tipo" [(ngModel)]="newProduct.tipo" required>
+              <option value="" disabled selected>Seleccione un tipo</option>
+              <option value="KIT">KIT COMPLETO</option>
+              <option value="ACT">ACTUADOR</option>
+              <option value="SEN">SENSOR</option>
+              <option value="OTR">OTRO</option>
+              <option value="PLA">PLACA</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="addCantidadTotal">Existencia:</label>
+            <input type="number" id="addCantidadTotal" name="cantidadTotal" [(ngModel)]="newProduct.cantidadTotal"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="addCostoUnidad">Costo:</label>
+            <input type="number" id="addCostoUnidad" name="costoUnidad" [(ngModel)]="newProduct.costoUnidad" required
+              step="0.01">
+          </div>
+          <div class="form-group full-width">
+            <label for="addDescripcion">Descripción:</label>
+            <textarea id="addDescripcion" name="descripcion" [(ngModel)]="newProduct.descripcion" rows="3"></textarea>
+          </div>
+        </div>
+        <button type="submit" [disabled]="!addProductForm.form.valid">Guardar</button>
+        <button type="button" (click)="closeAddModal()">Cancelar</button>
+      </form>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-content">
+    <div class="footer-column">
+      <h4>TechGuardian Solutions</h4>
+      <p>Tu tienda especializada en productos Arduino y componentes electrónicos para todos tus proyectos.</p>
+    </div>
+    <div class="footer-column">
+      <h4>Enlaces rápidos</h4>
+      <ul>
+        <li><a href="#">Inicio</a></li>
+        <li><a href="#">Productos</a></li>
+        <li><a href="#">Kits</a></li>
+        <li><a href="#">Tutoriales</a></li>
+        <li><a href="#">Contacto</a></li>
+      </ul>
+    </div>
+    <div class="footer-column">
+      <h4>Ayuda</h4>
+      <ul>
+        <li><a href="#">FAC</a></li>
+        <li><a href="#">Envíos</a></li>
+        <li><a href="#">Devoluciones</a></li>
+        <li><a href="#">Garantía</a></li>
+        <li><a href="#">Política de privacidad</a></li>
+      </ul>
+    </div>
+    <div class="footer-column">
+      <h4>Contacto</h4>
+      <p>Calle San Cristobal, 123</p>
+      <p>+34 912 345 678</p>
+      <p>infotechguardiansolutions.com</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 TechGuardian Solutions - Todos los derechos reservados</p>
+  </div>
+</footer>

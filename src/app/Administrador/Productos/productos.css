@@ -1,0 +1,510 @@
+:host {
+  --teal: #00c4b4;
+  --gray-200: #d3d3d3;
+  --white: #ffffff;
+  --orange: #f5a623;
+  --dark-gray-footer: #00c4b4;
+  --light-gray-text: #ffffff;
+  --light-gray-line: #ffffff;
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: var(--teal);
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 60px;
+}
+
+header .brand {
+  display: flex;
+  align-items: center;
+}
+
+header .logo img {
+  max-height: 50px;
+  width: auto;
+  vertical-align: middle;
+  display: block;
+  margin-right: 10px;
+}
+
+header .brand-text {
+  color: var(--white);
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+header nav a {
+  color: var(--white);
+  margin-left: 20px;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+header nav a:hover {
+  text-decoration: underline;
+}
+
+/* para el select de salida */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: var(--white);
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  right: 0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.dropdown-content a:hover {
+  background-color: var(--gray-200);
+  cursor: pointer;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+header .login-btn {
+  background-color: var(--orange);
+  color: var(--white);
+  border: none;
+  padding: 5px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+header .login-btn:hover {
+  background-color: #e5941e;
+}
+
+.main-content {
+  text-align: center;
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* REGLAS ACTUALIZADAS PARA EL ENCABEZADO DE LA PÁGINA DE PRODUCTOS */
+.page-header-with-back {
+  display: flex; /* Usa flexbox para alinear el botón y el título */
+  align-items: center; /* Centra verticalmente los elementos */
+  justify-content: center; /* Centra el h1 horizontalmente */
+  position: relative; /* Necesario para posicionar el botón de forma absoluta */
+  margin-bottom: 20px; /* Margen debajo de este bloque */
+  width: 100%; /* Asegura que ocupe todo el ancho disponible */
+  padding: 0 20px; /* Añade padding para que el botón no se pegue al borde */
+  box-sizing: border-box; /* Incluye el padding en el ancho total */
+}
+
+.page-header-with-back h1 {
+  margin: 0; /* Elimina el margen predeterminado del h1 para un mejor control con flexbox */
+  text-align: center; /* Asegura que el texto del h1 esté centrado */
+  flex-grow: 1; /* Permite que el h1 ocupe el espacio restante y empuje el botón */
+}
+
+/* Estilos para el botón "Volver a la lista" */
+.back-to-list-btn {
+  background-color: var(--teal); /* Color de fondo teal */
+  color: var(--white); /* Color de texto blanco */
+  border: none;
+  padding: 10px 15px; /* Relleno interno */
+  border-radius: 20px; /* Bordes redondeados para un aspecto de "píldora" */
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold; /* Para que el texto sea más prominente */
+  display: flex; /* Usa flexbox para el icono y el texto */
+  align-items: center; /* Centra verticalmente el icono y el texto */
+  gap: 8px; /* Espacio entre el icono y el texto */
+  transition: background-color 0.3s ease; /* Transición suave al pasar el ratón */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra sutil para el efecto 3D */
+  position: absolute; /* Posiciona el botón de forma absoluta */
+  left: 20px; /* Lo mueve 20px desde el borde izquierdo del contenedor padre */
+}
+
+.back-to-list-btn:hover {
+  background-color: #00998c; /* Un tono más oscuro de teal al pasar el ratón */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada al pasar el ratón */
+}
+
+.back-to-list-btn i {
+  margin-right: 5px; /* Espacio entre el icono y el texto dentro del botón */
+}
+
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.table-container {
+  max-height: 375px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: var(--teal);
+  color: var(--white);
+  position: sticky;
+  top: 0;
+}
+
+tr:nth-child(even) {
+  background-color: var(--gray-200);
+}
+
+/* Estilos para los botones de acción en la tabla (Ver, Editar, Eliminar, Activar) */
+.action-btn {
+  margin: 0 5px;
+  cursor: pointer;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.action-btn.view-btn {
+  background-color: #00ffff;
+  color: #333;
+}
+
+.action-btn.edit-btn {
+  background-color: var(--orange);
+  color: var(--white);
+}
+
+.action-btn.delete-btn {
+  background-color: #ff0000;
+  color: var(--white);
+}
+
+.action-btn.activate-btn {
+  background-color: #00cc00;
+  color: var(--white);
+}
+
+/* CLASES DEL USUARIO - MODIFICADAS PARA EL LAYOUT SOLICITADO */
+.bottom-actions-container {
+  display: flex;
+  justify-content: flex-start; /* CAMBIO: Alinea los elementos al inicio (izquierda) */
+  align-items: center;
+  margin-top: 20px;
+  padding: 0 5px;
+  /* Añadido gap para espacio entre los botones si hay más de dos y no usan auto margins */
+  gap: 15px;
+}
+
+.cart-btn {
+  background-color: #00cc00;
+  color: var(--white);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.cart-btn:hover {
+  background-color: #00b300;
+}
+
+.cart-btn.back-btn {
+  background-color: #6c757d;
+}
+
+.cart-btn.back-btn:hover {
+  background-color: #5a6268;
+}
+
+.cart-btn.toggle-btn {
+  background-color: #007bff;
+  margin-left: auto; /* CAMBIO: Empuja este botón a la derecha */
+}
+
+.cart-btn.toggle-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Eliminada la regla que centraba el botón 'add-btn' (ya no es necesaria con flex-start y margin-left: auto) */
+/* .bottom-actions-container .add-btn {
+  margin-left: auto;
+  margin-right: auto;
+} */
+/* FIN DE CLASES DEL USUARIO - MODIFICADAS */
+
+/* Para el contenedor de acciones de productos (renombrado en el HTML) */
+.product-actions-container {
+  display: flex;
+  justify-content: space-around; /* Distribuye los botones con espacio entre ellos */
+  align-items: center;
+  margin-top: 20px;
+  padding: 0 10px;
+  flex-wrap: wrap; /* Permite que los botones se envuelvan en pantallas pequeñas */
+  gap: 15px; /* Espacio entre los botones */
+}
+
+
+footer {
+  background-color: var(--dark-gray-footer);
+  color: var(--light-gray-text);
+  padding: 40px 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 40px;
+}
+
+.footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  max-width: 1000px;
+  margin: 0 auto 30px auto;
+  text-align: left;
+}
+
+.footer-column {
+  flex: 1;
+  min-width: 200px;
+  margin: 15px;
+}
+
+.footer-column h4 {
+  color: var(--white);
+  margin-bottom: 20px;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.footer-column p {
+  margin-bottom: 15px;
+}
+
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-column ul li {
+  margin-bottom: 10px;
+}
+
+.footer-column ul li a {
+  color: var(--light-gray-text);
+  text-decoration: none;
+}
+
+.footer-column ul li a:hover {
+  color: var(--teal);
+  text-decoration: underline;
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--light-gray-line);
+  padding-top: 20px;
+  margin-top: 20px;
+  color: var(--light-gray-text);
+}
+
+/* Modal Styles */
+.modal-overlay {
+  display: none; /* Controlado por *ngIf en HTML */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999; /* Aumentado a un valor muy alto para asegurar superposición */
+  display: flex; /* Asegura que el contenido del modal se centre */
+  justify-content: center;
+  align-items: center;
+  isolation: isolate; /* NUEVO: Crea un nuevo contexto de apilamiento */
+}
+
+.modal-content {
+  background-color: var(--white);
+  /* margin: 15% auto; -- Eliminado, ya que flexbox lo centra */
+  padding: 20px;
+  border-radius: 5px;
+  width: 30%;
+  max-width: 100px;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-content h2 { /* Ajustado para ser más específico que .modal-content .modal-title */
+  background-color: var(--teal);
+  color: var(--white);
+  padding: 10px 15px;
+  margin: -20px -20px 20px -20px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  text-align: center;
+  font-size: 1.2em;
+}
+
+.modal-content .form-group label {
+  display: block;
+  margin: 10px 0 5px;
+  text-align: left;
+  font-weight: bold; /* Añadido para consistencia */
+  color: #333; /* Añadido para consistencia */
+}
+
+.modal-content .form-group input[type="text"],
+.modal-content .form-group input[type="number"],
+.modal-content .form-group input[type="email"], /* Añadido email */
+.modal-content .form-group input[type="date"], /* Añadido date */
+.modal-content .form-group input[type="password"], /* Añadido password */
+.modal-content .form-group select,
+.modal-content .form-group textarea {
+  width: 100%;
+  padding: 8px; /* Ajustado de 5px a 8px para consistencia */
+  margin-bottom: 10px;
+  border: 1px solid #ccc; /* Ajustado de #ddd a #ccc para consistencia */
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.modal-content .form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.modal-content .buttons {
+  text-align: right; /* Regla general que se sobrescribe con .centered-buttons */
+}
+
+/* Nueva clase para centrar los botones en modales específicos */
+.centered-buttons {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.modal-content button {
+  padding: 8px 15px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 20px; /* Mantenido para botones individuales si no están en .buttons */
+  transition: background-color 0.3s ease;
+}
+
+.modal-content button.guardar,
+.modal-content button[type="submit"] { /* Unificado para guardar y submit */
+  background-color: #00cc00;
+  color: var(--white);
+}
+
+.modal-content button.guardar:hover,
+.modal-content button[type="submit"]:hover {
+  background-color: #00b300;
+}
+
+.modal-content button.limpiar {
+  background-color: #ffa500;
+  color: var(--white);
+}
+
+.modal-content button.limpiar:hover {
+  background-color: #e69500; /* Tono más oscuro para hover */
+}
+
+.modal-content button.cancelar,
+.modal-content button:last-of-type { /* Unificado para cancelar y último botón */
+  background-color: #ff0000;
+  color: var(--white);
+  width: 20%;
+  align-self: center;
+}
+
+.modal-content button.cancelar:hover,
+.modal-content button:last-of-type:hover {
+  background-color: #e60000;
+}
+
+.modal-content button[type="submit"]:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Ajustes para el modal-content principal (más ancho) */
+.modal-content {
+  margin: 5% auto; /* Ajustado para centrar*/
+  width: 90%;
+  max-width: 500px;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-column {
+    margin: 15px 0;
+    min-width: unset;
+    width: 100%;
+  }
+
+  .modal-content .form-columns {
+    flex-direction: column;
+  }
+
+  .modal-content .form-group {
+    flex: 1 1 100%;
+  }
+
+  /* Las siguientes reglas son las que me pediste no modificar */
+  .bottom-actions-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .bottom-actions-container .cart-btn {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}

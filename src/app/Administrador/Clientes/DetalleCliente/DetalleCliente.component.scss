@@ -1,0 +1,403 @@
+
+.client-detail-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  background: #f8f9fa;
+  min-height: 100vh;
+
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+
+    .back-btn {
+      background: #20b2aa;
+      color: white;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: #1a9e96;
+        transform: translateY(-2px);
+      }
+    }
+
+    h1 {
+      color: #2c3e50;
+      font-size: 2.2rem;
+      margin: 0;
+      font-weight: 700;
+    }
+  }
+
+  .content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+
+    .left-section {
+      .client-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 2rem;
+
+        .client-avatar {
+          text-align: center;
+          margin-bottom: 1.5rem;
+
+          .avatar-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #20b2aa, #48d1cc);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 2rem;
+            margin: 0 auto;
+          }
+        }
+
+        .client-header {
+          text-align: center;
+          margin-bottom: 2rem;
+
+          h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin: 0 0 1rem 0;
+            font-weight: 600;
+          }
+
+          .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+
+            &.status-active {
+              background: #d4edda;
+              color: #155724;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Sección derecha - Historial de compras
+.right-section {
+  .purchases-section {
+    h3 {
+      margin: 0 0 20px 0;
+      color: #212529;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .purchases-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    // Card de compra mejorada
+    .purchase-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      border: 1px solid #e9ecef;
+      overflow: hidden;
+      transition: all 0.3s ease;
+
+      &:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+      }
+
+      &.expanded {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        border-color: #007bff;
+      }
+
+      .purchase-header {
+        padding: 20px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        border-bottom: 1px solid #e9ecef;
+        transition: background 0.2s ease;
+
+        &:hover {
+          background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%);
+        }
+
+        .purchase-info {
+          flex: 1;
+
+          h4 {
+            margin: 0 0 4px 0;
+            color: #212529;
+            font-size: 16px;
+            font-weight: 600;
+          }
+
+          .purchase-date {
+            margin: 0;
+            color: #6c757d;
+            font-size: 13px;
+          }
+        }
+
+        .purchase-summary {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 4px;
+
+          .purchase-total {
+            font-size: 18px;
+            font-weight: 700;
+            color: #28a745;
+          }
+
+          .purchase-status {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: #d4edda;
+            color: #155724;
+          }
+        }
+
+        .expand-icon {
+          margin-left: 16px;
+
+          span {
+            display: inline-block;
+            transition: transform 0.3s ease;
+            color: #6c757d;
+            font-size: 14px;
+
+            &.rotated {
+              transform: rotate(180deg);
+            }
+          }
+        }
+      }
+
+      // Detalles de la compra
+      .purchase-details {
+        padding: 0;
+        background: #fafbfc;
+        border-top: 1px solid #e9ecef;
+
+        .items-list {
+          padding: 20px;
+
+          h5 {
+            margin: 0 0 16px 0;
+            color: #495057;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+
+          // Tabla de productos
+          .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+            thead {
+              background: #f8f9fa;
+
+              th {
+                padding: 12px;
+                text-align: left;
+                font-weight: 600;
+                color: #495057;
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border-bottom: 2px solid #dee2e6;
+
+                &:nth-child(2), &:nth-child(3), &:nth-child(4) {
+                  text-align: center;
+                }
+              }
+            }
+
+            tbody {
+              tr {
+                border-bottom: 1px solid #f1f3f4;
+                transition: background 0.2s ease;
+
+                &:hover {
+                  background: #f8f9fa;
+                }
+
+                &:last-child {
+                  border-bottom: none;
+                }
+
+                td {
+                  padding: 12px;
+                  font-size: 14px;
+                  color: #212529;
+
+                  &:nth-child(2), &:nth-child(3), &:nth-child(4) {
+                    text-align: center;
+                  }
+
+                  &.item-name {
+                    font-weight: 500;
+                    color: #495057;
+                  }
+
+                  &.item-quantity {
+                    color: #6c757d;
+                  }
+
+                  &.item-price, &.item-total {
+                    font-weight: 600;
+                    color: #28a745;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        .purchase-footer {
+          padding: 16px 20px;
+          background: white;
+          border-top: 1px solid #e9ecef;
+
+          .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .total-label {
+              font-size: 16px;
+              font-weight: 600;
+              color: #495057;
+            }
+
+            .total-amount {
+              font-size: 20px;
+              font-weight: 700;
+              color: #28a745;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Estados de carga y vacío
+.loading-purchases, .loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #6c757d;
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+.empty-purchases {
+  text-align: center;
+  padding: 60px 20px;
+  color: #6c757d;
+
+  .empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+
+  h4 {
+    margin: 0 0 8px 0;
+    color: #495057;
+    font-size: 18px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .client-detail-container {
+    padding: 16px;
+  }
+
+  .content {
+    gap: 20px;
+  }
+
+  .purchase-card .purchase-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+
+    .purchase-summary {
+      align-items: flex-start;
+    }
+  }
+
+  .products-table {
+    font-size: 12px;
+
+    th, td {
+      padding: 8px 6px;
+    }
+  }
+}

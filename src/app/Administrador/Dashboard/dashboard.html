@@ -1,0 +1,237 @@
+<app-barra-navegacion></app-barra-navegacion>
+
+<main class="main-content">
+  <div class="container-fluid py-4">
+    <h3 class="mb-1 text-dark">Panel de Control (Tus Estadísticas)</h3>
+    <p class="text-muted mb-4">Bienvenido a tu dashboard de estadísticas.</p>
+
+    <div class="row">
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card shadow-sm border-0 rounded-lg">
+          <div class="card-body d-flex align-items-center">
+            <div
+              class="icon-wrapper card-total-sales me-3 rounded-circle d-flex align-items-center justify-content-center">
+              <i class="fas fa-chart-bar fs-5"></i>
+            </div>
+            <div>
+              <div class="text-muted small">Ventas Totales</div>
+              <h4 class="mb-0 fw-bold text-dark">$24,780</h4>
+              <span class="text-success small"><i class="fas fa-arrow-up me-1"></i> +12% desde ayer</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card shadow-sm border-0 rounded-lg">
+          <div class="card-body d-flex align-items-center">
+            <div
+              class="icon-wrapper card-new-clients me-3 rounded-circle d-flex align-items-center justify-content-center">
+              <i class="fas fa-user-plus fs-5"></i>
+            </div>
+            <div>
+              <div class="text-muted small">Nuevos Clientes</div>
+              <h4 class="mb-0 fw-bold text-dark">1,458</h4>
+              <span class="text-success small"><i class="fas fa-arrow-up me-1"></i> +8% desde ayer</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card shadow-sm border-0 rounded-lg">
+          <div class="card-body d-flex align-items-center">
+            <div class="icon-wrapper card-ratings me-3 rounded-circle d-flex align-items-center justify-content-center">
+              <i class="fas fa-star fs-5"></i>
+            </div>
+            <div>
+              <div class="text-muted small">Ratings</div>
+              <h4 class="mb-0 fw-bold text-dark">4.8/5</h4>
+              <span class="text-danger small"><i class="fas fa-arrow-down me-1"></i> -2% desde ayer</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card shadow-sm border-0 rounded-lg">
+          <div class="card-body d-flex align-items-center">
+            <div
+              class="icon-wrapper card-active-products me-3 rounded-circle d-flex align-items-center justify-content-center">
+              <i class="fas fa-box-open fs-5"></i>
+            </div>
+            <div>
+              <div class="text-muted small">Productos Activos</div>
+              <h4 class="mb-0 fw-bold text-dark">843</h4>
+              <span class="text-success small"><i class="fas fa-arrow-up me-1"></i> +5% desde ayer</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-7 mb-4">
+        <div class="card shadow-sm border-0 rounded-lg">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="card-title fw-bold text-dark mb-0">Ventas Mensuales</h5>
+              <div class="btn-group" role="group" aria-label="Chart controls">
+                <button type="button" class="btn btn-outline-primary btn-sm active"
+                  (click)="updateSalesChart('monthly')">Mensual</button>
+                <button type="button" class="btn btn-outline-primary btn-sm"
+                  (click)="updateSalesChart('weekly')">Semanal</button>
+                <button type="button" class="btn btn-outline-primary btn-sm"
+                  (click)="updateSalesChart('daily')">Diario</button>
+              </div>
+            </div>
+            <div class="chart-container-bs">
+              <canvas id="salesChart" #salesChart class="w-100 h-100"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-5 mb-4">
+        <div class="card shadow-sm border-0 rounded-lg">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="card-title fw-bold text-dark mb-0">Adquisición de Clientes</h5>
+              <select class="form-select form-select-sm w-auto" (change)="updateCustomerChart($event)">
+                <option value="30days" selected>Últimos 30 días</option>
+                <option value="90days">Últimos 90 días</option>
+                <option value="year">Este año</option>
+              </select>
+            </div>
+            <div class="chart-container-bs">
+              <canvas id="customerChart" #customerChart class="w-100 h-100"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-lg recent-orders-card-bs">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="card-title fw-bold text-dark mb-0">Órdenes Recientes</h5>
+          <a href="#" class="text-primary text-decoration-none fw-bold">Ver Todos</a>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th scope="col" class="text-uppercase text-muted">ID</th>
+                <th scope="col" class="text-uppercase text-muted">Cliente</th>
+                <th scope="col" class="text-uppercase text-muted">Fecha</th>
+                <th scope="col" class="text-uppercase text-muted">Total</th>
+                <th scope="col" class="text-uppercase text-muted">Estado</th>
+                <th scope="col" class="text-uppercase text-muted"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>#47895</td>
+                <td>María López</td>
+                <td>12/05/2023</td>
+                <td>$325.80</td>
+                <td>
+                  <span class="badge status-completed-bs">Completado</span>
+                </td>
+                <td>
+                  <a href="#" class="text-primary text-decoration-none">Ver</a>
+                </td>
+              </tr>
+              <tr>
+                <td>#47900</td>
+                <td>Carlos Martínez</td>
+                <td>11/05/2023</td>
+                <td>$87.25</td>
+                <td>
+                  <span class="badge status-pending-bs">Pendiente</span>
+                </td>
+                <td>
+                  <a href="#" class="text-primary text-decoration-none">Ver</a>
+                </td>
+              </tr>
+              <tr>
+                <td>#47892</td>
+                <td>Ana Rodríguez</td>
+                <td>10/05/2023</td>
+                <td>$215.50</td>
+                <td>
+                  <span class="badge status-completed-bs">Completado</span>
+                </td>
+                <td>
+                  <a href="#" class="text-primary text-decoration-none">Ver</a>
+                </td>
+              </tr>
+              <tr>
+                <td>#47888</td>
+                <td>Juan Gómez</td>
+                <td>09/05/2023</td>
+                <td>$542.30</td>
+                <td>
+                  <span class="badge status-cancelled-bs">Cancelado</span>
+                </td>
+                <td>
+                  <a href="#" class="text-primary text-decoration-none">Ver</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-content">
+    <div class="footer-column">
+      <h4>TechGuardian Solutions</h4>
+      <p>Tu tienda especializada en productos Arduino y componentes electrónicos para todos tus proyectos.</p>
+      <div class="social-icons">
+      </div>
+    </div>
+
+    <div class="footer-column">
+      <h4>Enlaces rápidos</h4>
+      <ul>
+        <li><a href="#">Inicio</a></li>
+        <li><a href="#">Productos</a></li>
+        <li><a href="#">Kits</a></li>
+        <li><a href="#">Tutoriales</a></li>
+        <li><a href="#">Contacto</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-column">
+      <h4>Ayuda</h4>
+      <ul>
+        <li><a href="#">FAC</a></li>
+        <li><a href="#">Envíos</a></li>
+        <li><a href="#">Devoluciones</a></li>
+        <li><a href="#">Garantía</a></li>
+        <li><a href="#">Política de privacidad</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-column">
+      <h4>Contacto</h4>
+      <p>
+        Calle San Cristobal, 123
+      </p>
+      <p>
+        +34 912 345 678
+      </p>
+      <p>
+        info&commat;techguardiansolutions.com
+      </p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 TechGuardian Solutions - Todos los derechos reservados</p>
+  </div>
+</footer>
