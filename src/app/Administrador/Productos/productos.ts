@@ -1,14 +1,16 @@
 
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { BarraNavegacion } from '../barra-navegacion/barra-navegacion';
+import { ConsultaProductoService } from '../../ServiciosGlobales/ConsultaProductosService';
+import { Producto } from '../../Models/ProductoModel';
 
 @Component({
   selector: 'app-productos',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, BarraNavegacion],
+  imports: [CommonModule, FormsModule, BarraNavegacion],
   templateUrl: './productos.html',
   styleUrls: ['./productos.css']
 })
@@ -17,7 +19,7 @@ export class ProductosComponent implements OnInit {
   rfcProveedor: string | null = null;
   nombreEmpresa: string | null = null;
 
-  productosMostrados: any[] = [];
+  productosMostrados: Producto[] = [];
   mostrarActivos: boolean = true;
 
   isViewModalOpen: boolean = false;
@@ -37,96 +39,35 @@ export class ProductosComponent implements OnInit {
     estatus: '1'
   };
 
-  todosLosProductos = [
-    {
-      idProducto: 1,
-      nombreProducto: 'Arduino UNO R3',
-      marca: 'Arduino',
-      tipo: 'PLA',
-      cantidadTotal: 150,
-      costoUnidad: 15.99,
-      descripcion: 'Placa de desarrollo Arduino UNO R3, ideal para proyectos de electrónica y robótica.',
-      rfcProveedor: '1234567890AA',
-      estatus: '1'
-    },
-    {
-      idProducto: 2,
-      nombreProducto: 'Sensor de Temperatura DHT11',
-      marca: 'Generic',
-      tipo: 'SEN',
-      cantidadTotal: 300,
-      costoUnidad: 5.50,
-      descripcion: 'Sensor de temperatura y humedad digital, fácil de usar con microcontroladores.',
-      rfcProveedor: '1234567890AA',
-      estatus: '1'
-    },
-    {
-      idProducto: 3,
-      nombreProducto: 'Kit de Inicio Arduino',
-      marca: 'Elegoo',
-      tipo: 'KIT',
-      cantidadTotal: 50,
-      costoUnidad: 49.99,
-      descripcion: 'Kit completo para empezar con Arduino, incluye placa, componentes y tutoriales.',
-      rfcProveedor: 'CESA010101AB',
-      estatus: '1'
-    },
-    {
-      idProducto: 4,
-      nombreProducto: 'Módulo Bluetooth HC-05',
-      marca: 'Generic',
-      tipo: 'OTR',
-      cantidadTotal: 200,
-      costoUnidad: 8.75,
-      descripcion: 'Módulo Bluetooth para comunicación serial inalámbrica entre dispositivos.',
-      rfcProveedor: '1234567890AA',
-      estatus: '0'
-    },
-    {
-      idProducto: 5,
-      nombreProducto: 'Servomotor SG90',
-      marca: 'TowerPro',
-      tipo: 'ACT',
-      cantidadTotal: 250,
-      costoUnidad: 3.20,
-      descripcion: 'Pequeño servomotor de 9g, ideal para proyectos de robótica ligera.',
-      rfcProveedor: 'CESA010101AB',
-      estatus: '1'
-    },
-    {
-      idProducto: 6,
-      nombreProducto: 'Protoboard 400 puntos',
-      marca: 'Generic',
-      tipo: 'OTR',
-      cantidadTotal: 400,
-      costoUnidad: 2.10,
-      descripcion: 'Protoboard de 400 puntos para prototipado rápido de circuitos electrónicos.',
-      rfcProveedor: '9876543210BB',
-      estatus: '0'
-    },
-    {
-      idProducto: 7,
-      nombreProducto: 'LEDs Surtidos (100u)',
-      marca: 'Generic',
-      tipo: 'OTR',
-      cantidadTotal: 600,
-      costoUnidad: 6.00,
-      descripcion: 'Paquete de 100 LEDs de varios colores para indicadores y proyectos de iluminación.',
-      rfcProveedor: 'CESA010101AB',
-      estatus: '1'
-    },
-  ];
+  todosLosProductos: Producto[] = [];
 
-  constructor(private route: ActivatedRoute, private router: Router) { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private consultaProductoService: ConsultaProductoService
+  ) { }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.rfcProveedor = params['rfcProveedor'] || null;
       this.nombreEmpresa = params['nombreEmpresa'] || null;
-      this.filtrarProductosPorProveedor();
-
       if (this.rfcProveedor) {
         this.newProduct.rfcProveedor = this.rfcProveedor;
+      }
+      this.cargarProductos();
+    });
+  }
+
+  cargarProductos() {
+    this.consultaProductoService.obtenerProductos().subscribe({
+      next: (productos: Producto[]) => {
+        this.todosLosProductos = productos;
+        this.filtrarProductosPorProveedor();
+      },
+      error: (err) => {
+        console.error('Error al obtener productos reales:', err);
+        this.todosLosProductos = [];
+        this.productosMostrados = [];
       }
     });
   }
@@ -134,8 +75,10 @@ export class ProductosComponent implements OnInit {
   filtrarProductosPorProveedor() {
     if (this.rfcProveedor) {
       this.productosMostrados = this.todosLosProductos.filter(
-        producto => producto.rfcProveedor === this.rfcProveedor &&
-                    producto.estatus === (this.mostrarActivos ? '1' : '0')
+        producto => {
+          const proveedorRFC = producto.proveedor?.rfc;
+          return proveedorRFC === this.rfcProveedor && producto.estatus === this.mostrarActivos;
+        }
       );
       console.log(`Productos para el proveedor con RFC: ${this.rfcProveedor} (Activos: ${this.mostrarActivos})`, this.productosMostrados);
     } else {
@@ -199,7 +142,7 @@ export class ProductosComponent implements OnInit {
   eliminarProducto(producto: any) {
     const index = this.todosLosProductos.findIndex(p => p.idProducto === producto.idProducto);
     if (index !== -1) {
-      this.todosLosProductos[index].estatus = '0';
+  this.todosLosProductos[index].estatus = false;
       console.log('Producto marcado como eliminado (inactivo):', this.todosLosProductos[index]);
       this.filtrarProductosPorProveedor();
 
@@ -217,7 +160,7 @@ export class ProductosComponent implements OnInit {
   activarProducto(producto: any) {
     const index = this.todosLosProductos.findIndex(p => p.idProducto === producto.idProducto);
     if (index !== -1) {
-      this.todosLosProductos[index].estatus = '1';
+  this.todosLosProductos[index].estatus = true;
       console.log('Producto activado:', this.todosLosProductos[index]);
       this.filtrarProductosPorProveedor();
     } else {
