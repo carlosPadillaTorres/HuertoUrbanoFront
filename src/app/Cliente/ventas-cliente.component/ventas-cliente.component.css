@@ -12,6 +12,10 @@
       font-size: 1.3rem;
       font-weight: bold;
     }
+    .msg {
+      margin: 20px 0 30px 0;
+      text-align: center;
+    }
 
     /* Container de las cards */
     .purchases-container {
@@ -266,3 +270,48 @@
       color: #222;
     }
 
+    /* Responsive */
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 0 15px 120px 15px;
+      }
+
+      .purchase-card {
+        padding: 20px;
+        flex-direction: column;
+        gap: 15px;
+        min-height: 90px;
+      }
+
+      .purchase-right {
+        align-items: flex-start;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      .cart-button {
+        bottom: 20px;
+        right: 20px;
+        width: 55px;
+        height: 55px;
+      }
+
+      .modal-container {
+        max-width: 90%;
+        margin: 0 10px;
+      }
+
+      .modal-product {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
+
+      .product-right {
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-around;
+        width: 100%;
+      }
+    }

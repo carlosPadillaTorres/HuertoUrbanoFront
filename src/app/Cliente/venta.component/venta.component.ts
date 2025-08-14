@@ -4,6 +4,7 @@ import { Footer } from "../../footer/footer";
 import { VentaService } from './venta.service';
 import Swal from 'sweetalert2';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-venta.component',
@@ -20,8 +21,8 @@ export class VentaComponent {
 
 
   constructor(
-    private ventaService: VentaService = inject(VentaService)
-  ) { }
+    private ventaService: VentaService = inject(VentaService),
+    private router: Router  ) { }
 
   ngOnInit(): void {
     this.cargarCarrito();
@@ -114,5 +115,9 @@ export class VentaComponent {
 
     this.ventaService.registrarCompra(ventaDto)
     this.cerrarModalComprados();
+  }
+
+  irPaginaComprados(){
+    this.router.navigate(['/misCompras']);
   }
 }

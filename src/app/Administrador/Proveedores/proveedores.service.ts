@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { Proveedor } from '../../Models/ProveedorModel';
 import { CreateProveedorDto, UpdateProveedorDto } from '../../DTO/ProveedorDto';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../enviroments/enviroment';
+import { GestorSesion } from '../../ServiciosGlobales/GestorSesion';
 
 @Injectable({
   providedIn: 'any'
@@ -28,7 +29,12 @@ export class ProveedoresService {
   }*/
 
  getProveedores(): Observable<Proveedor[]> {
-    return this.http.get<Proveedor[]>(`${this.url}obtenerProveedores`);
+  const encabezados = new HttpHeaders({
+      'Authorization': `Bearer ${GestorSesion.getToken()}`
+    });
+    return this.http.get<Proveedor[]>(`${this.url}obtenerProveedores`,{
+      headers: encabezados
+    });
   }
 
   async getProveedoresPorId(id : Number): Promise<Proveedor | undefined> {

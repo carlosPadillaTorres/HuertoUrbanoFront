@@ -33,6 +33,6 @@ export const routes: Routes = [
 
   { path: 'carrito', component: VentaComponent},
 
-  { path: 'comprasCliente', component: VentasClienteComponent }
+  { path: 'misCompras', component: VentasClienteComponent }
 
 ];

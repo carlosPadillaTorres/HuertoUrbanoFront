@@ -1,7 +1,7 @@
 import { jwtDecode } from "jwt-decode";
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
-import { environment } from '../../enviroments/enviroment';
+import { environment, session } from '../../enviroments/enviroment';
 import { Router } from "@angular/router";
 
 
@@ -9,17 +9,18 @@ export class GestorSesion {
 
   static setToken(token: string) {
     localStorage.setItem('token', token);
-    //session.token = token;
+    session.token = token;
   }
 
   static getDatosToken(): any {
-   // const token = session.token;
     const token = localStorage.getItem('token');
+    //const token = session.token;
     return token ? jwtDecode(token) : null;
   }
 
   static getToken(): string | null {
     //console.log("getToken LocalStorage: ", localStorage.getItem('token'));
+    //console.log(session.token);
     return localStorage.getItem('token');
     //return session.token;
   }
@@ -28,7 +29,7 @@ export class GestorSesion {
     console.log("eliminarToken LocalStorage: ", localStorage.getItem('token'));
     localStorage.setItem('token', '');
     localStorage.removeItem('token');
-    //session.token = null;
+    session.token = 'null';
   }
 
 

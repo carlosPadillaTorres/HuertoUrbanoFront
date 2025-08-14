@@ -23,34 +23,8 @@ export class VentaService {
       });
     }
 
-    /*async obtenerCompradosPorUsuario(idUsuario: number): Promise<any[]> {
-    try {
-      const response = await fetch(`${this.url}obtenerVentasCliente`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          // 'Authorization': `Bearer ${token}`
-        }
-      });
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        return {
-          success: false,
-          message: errorData.message || 'Error desconocido',
-          errors: errorData.errors || []
-        };
-      }
 
-      const data = await response.json();
-      return [];
 
-    } catch (error) {
-      Swal.
-      console.log("Algo salió mal: "+error)
-      return [];
-    }
-  }*/
 
   async registrarCompra(ventaDto: any): Promise<any> {
     const token = GestorSesion.getToken();
