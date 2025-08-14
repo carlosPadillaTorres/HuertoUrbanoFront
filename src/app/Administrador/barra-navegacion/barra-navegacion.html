@@ -13,9 +13,9 @@
   </nav>
 
   <div class="dropdown">
-    <button class="login-btn">ADMIN</button>
+    <button class="login-btn">{{obtenerNombreUsuario()}}</button>
     <div class="dropdown-content">
-      <a (click)="logout()">Cerrar Sesión</a>
+      <a class="cerrarSesion" (click)="llamarCerrarSesion()">Cerrar Sesión</a>
     </div>
   </div>
 

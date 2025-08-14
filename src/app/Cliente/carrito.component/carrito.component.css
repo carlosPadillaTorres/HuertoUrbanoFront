@@ -1,0 +1,20 @@
+
+    .cart-btn {
+      background-color: #00cc00;
+      color: var(--white);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 50%;
+      cursor: pointer;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font-size: 1rem;
+      z-index: 1000;
+    }
+
+    .cart-btn:hover {
+      background-color: #00b300;
+    }
+
+

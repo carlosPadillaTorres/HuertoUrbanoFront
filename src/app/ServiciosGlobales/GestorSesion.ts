@@ -1,0 +1,78 @@
+import { jwtDecode } from "jwt-decode";
+import { HttpHeaders, HttpClient } from '@angular/common/http';
+import Swal from 'sweetalert2';
+import { environment } from '../../enviroments/enviroment';
+import { Router } from "@angular/router";
+
+
+export class GestorSesion {
+
+  static setToken(token: string) {
+    localStorage.setItem('token', token);
+    //session.token = token;
+  }
+
+  static getDatosToken(): any {
+   // const token = session.token;
+    const token = localStorage.getItem('token');
+    return token ? jwtDecode(token) : null;
+  }
+
+  static getToken(): string | null {
+    //console.log("getToken LocalStorage: ", localStorage.getItem('token'));
+    return localStorage.getItem('token');
+    //return session.token;
+  }
+
+  static eliminarToken() {
+    console.log("eliminarToken LocalStorage: ", localStorage.getItem('token'));
+    localStorage.setItem('token', '');
+    localStorage.removeItem('token');
+    //session.token = null;
+  }
+
+
+  static confirmarCerrarSesion(http: HttpClient, router: Router) {
+    Swal.fire({
+      title: "¿Quieres cerrar sesión?",
+      showCancelButton: true,
+      confirmButtonText: "Si, cerrar sesión",
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        this.cerrarSesion(http, router);
+      }
+    });
+  }
+
+  static cerrarSesion(http: HttpClient, router: Router) {
+    const encabezados = new HttpHeaders({
+      'Authorization': `Bearer ${this.getToken()}`,
+      responseType: 'text'
+    });
+
+    http.get(environment.backUrl + 'cerrarSesion', {
+      headers: encabezados
+    }).subscribe(
+      (data: any) => {
+        Swal.fire({
+          icon: "success",
+          title: "Hecho!",
+          text: "" + (data && data.mensaje ? data.mensaje : "Sesión cerrada correctamente")
+        });
+
+        this.eliminarToken();
+        router.navigate(['/login']);
+
+      },
+      (error) => {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Algo salió mal al intentar cerrar sesión. Intente de nuevo.\n" + error.statusText
+        });
+      }
+    );
+  }
+
+}

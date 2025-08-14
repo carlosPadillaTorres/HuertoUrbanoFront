@@ -68,7 +68,7 @@ export class ProductosComponent implements OnInit {
       cantidadTotal: 50,
       costoUnidad: 49.99,
       descripcion: 'Kit completo para empezar con Arduino, incluye placa, componentes y tutoriales.',
-      rfcProveedor: '9876543210BB',
+      rfcProveedor: 'CESA010101AB',
       estatus: '1'
     },
     {
@@ -90,7 +90,7 @@ export class ProductosComponent implements OnInit {
       cantidadTotal: 250,
       costoUnidad: 3.20,
       descripcion: 'Pequeño servomotor de 9g, ideal para proyectos de robótica ligera.',
-      rfcProveedor: '5555555555CC',
+      rfcProveedor: 'CESA010101AB',
       estatus: '1'
     },
     {
@@ -112,7 +112,7 @@ export class ProductosComponent implements OnInit {
       cantidadTotal: 600,
       costoUnidad: 6.00,
       descripcion: 'Paquete de 100 LEDs de varios colores para indicadores y proyectos de iluminación.',
-      rfcProveedor: '1111111111DD',
+      rfcProveedor: 'CESA010101AB',
       estatus: '1'
     },
   ];

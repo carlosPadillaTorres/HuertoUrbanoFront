@@ -1,0 +1,23 @@
+<header>
+  <div class="brand">
+    <div class="logo">
+      <img src="../assets/TS.png" alt="TechGuardian Solutions Logo">
+    </div>
+    <div class="brand-text">TechGuardian Solutions</div>
+  </div>
+  <nav>
+    <a routerLink="/">Home</a>
+    <a routerLink="/productos">Productos</a>
+    <a routerLink="/Mis compras">Mis compras</a>
+    <a routerLink="/asesorias">Asesorías</a>
+    <a routerLink="/carrito">Carrito</a>
+  </nav>
+
+  <div class="dropdown">
+    <button class="login-btn">Cliente</button>
+    <div class="dropdown-content">
+      <a class="cerrarSesion" (click)="logout()">Cerrar Sesión</a>
+    </div>
+  </div>
+
+</header>

@@ -7,6 +7,9 @@ import { EmpleadosComponent } from './Administrador/Empleados/empleados';
 import { ProductosComponent } from './Administrador/Productos/productos';
 import { ListaClientesComponente } from './Administrador/Clientes/ListaClientes/ListaClientes.component';
 import { DetalleClienteComponente } from './Administrador/Clientes/DetalleCliente/DetalleCliente.component';
+import { ProductoClienteComponent } from './Cliente/producto.component/producto.component';
+import { VentaComponent } from './Cliente/venta.component/venta.component';
+import { VentasClienteComponent } from './Cliente/ventas-cliente.component/ventas-cliente.component';
 
 export const routes: Routes = [
   // principal
@@ -20,10 +23,16 @@ export const routes: Routes = [
 
   { path: 'empleados', component: EmpleadosComponent },
 
-  { path: 'productos', component: ProductosComponent },
+  { path: 'admin/productos', component: ProductosComponent },
 
   { path: 'admin/clientes', component: ListaClientesComponente },
 
-  { path: 'admin/detalleCliente/:id', component: DetalleClienteComponente }
+  { path: 'admin/detalleCliente/:id', component: DetalleClienteComponente },
+
+  { path: 'productos', component: ProductoClienteComponent },
+
+  { path: 'carrito', component: VentaComponent},
+
+  { path: 'comprasCliente', component: VentasClienteComponent }
 
 ];

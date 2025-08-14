@@ -1,0 +1,123 @@
+<app-barra-navegacion-cliente> </app-barra-navegacion-cliente>
+
+<main class="main-content">
+  <h2>Su carrito listo para comprar</h2>
+
+  <div class="cart-container">
+    @if(productos.length === 0) {
+    <p>No hay productos en el carrito.</p>
+    }
+    @for(item of productos; track item.idProducto) {
+    <div class="cart-item">
+      <div class="item-image">
+        <img src="https://via.placeholder.com/200" alt="{{item.nombreProducto}}">
+      </div>
+
+      <div class="item-info">
+        <div class="item-title">{{item.nombreProducto}}</div>
+        <div class="item-details">{{item.descripcion}}</div>
+      </div>
+
+      <div class="item-qty-price">
+        <div class="qty-label">Cantidad<br><strong>{{item.cantidad}}</strong></div>
+        <div class="item-price">${{item.costoUnidad}}</div>
+      </div>
+
+      <button class="remove-btn" (click)="eliminarArticulo(item.idProducto)">Eliminar</button>
+    </div>
+    }
+
+    <!-- Comprar -->
+    @if(productos.length > 0) {
+    <div class="buy-section">
+      <div class="buy-text">
+        Para realizar la compra asegúrese de que son los modelos, cantidad y productos correctos.
+      </div>
+      <button (click)="confirmarCompra()" class="buy-btn">Comprar</button>
+    </div>
+    }
+
+    <button class="view-btn" (click)="abrirModalComprados()">Ver comprados</button>
+  </div>
+</main>
+
+<!-- Modal de productos comprados -->
+@if(mostrarModalComprados) {
+<div class="modal-overlay">
+  <div class="modal-container">
+    <h3>Productos comprados</h3>
+
+    @if(productosComprados.length === 0) {
+    <p>No se han encontrado compras anteriores.</p>
+    }@else{
+
+    <div>
+      @for(prod of productosComprados; track prod.fechaCompra) {
+      <div class="modal-item">
+        <div class="modal-left">
+          <div class="modal-date"><strong>{{prod.fechaVenta}}</strong></div>
+          <!--<p>{{prod.nombreProducto}}<br><small>{{prod.descripcion}}</small></p>-->
+        </div>
+        <div class="modal-price">${{prod.total}}</div>
+      </div>
+      }
+    </div>
+    }
+
+
+    <div class="modal-buttons">
+      <button class="btn-red" (click)="cerrarModalComprados()">Cerrar</button>
+    </div>
+  </div>
+</div>
+}
+
+
+<div [hidden]="!mostrarModalConfirmacion" class="modal-overlay">
+  <div class="modal-container">
+    <h3>Confirmar compra</h3>
+
+    <div class="modal-item">
+      <div class="modal-left">
+
+
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Precio</th>
+              <th>Cantidad</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(prod of productos; track prod.idProducto) {
+            <tr>
+              <td>{{ prod.nombreProducto }}</td>
+              <td>{{ prod.costoUnidad }}</td>
+              <td>{{ prod.cantidad }}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-price">
+        <div class="titleTotal"><b>TOTAL</b></div>
+        <p>${{ obtenerTotal() }}</p>
+      </div>
+    </div>
+
+    <div class="modal-confirm">
+      <div class="modal-confirm-text">
+        <strong>Por favor confirme la compra</strong><br>
+        Una vez realizada la compra no se pueden realizar modificaciones en esta misma
+      </div>
+      <div class="modal-buttons">
+        <button (click)="registrarVenta()" class="btn-green">Comprar</button>
+        <button (click)="cerrarModalConfirmacion()" class="btn-red">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<app-footer> </app-footer>

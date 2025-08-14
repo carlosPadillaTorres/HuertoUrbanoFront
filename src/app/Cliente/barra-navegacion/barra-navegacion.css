@@ -1,0 +1,136 @@
+
+
+
+     :host {
+      --teal: #00c4b4;
+      --gray-200: #d3d3d3;
+      --white: #ffffff;
+      --orange: #f5a623;
+      --dark-gray-footer: #00c4b4;
+      --light-gray-text: #ffffff;
+      --light-gray-line: #ffffff;
+      font-family: Arial, sans-serif;
+      box-sizing: border-box;
+    }
+
+
+header .login-btn {
+  background-color: var(--orange);
+  color: var(--white);
+  border: none;
+  padding: 5px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+header .login-btn:hover {
+  background-color: #e5941e;
+}
+
+
+header {
+  background-color: var(--teal);
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 60px;
+}
+
+header .brand {
+  display: flex;
+  align-items: center;
+}
+
+header .logo img {
+  max-height: 50px;
+  width: auto;
+  vertical-align: middle;
+  display: block;
+  margin-right: 10px;
+}
+
+header .brand-text {
+  color: var(--white);
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+header nav a {
+  color: var(--white);
+  margin-left: 20px;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+header nav a:hover {
+  text-decoration: underline;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: white;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+  z-index: 1;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 10px 16px;
+  text-decoration: none;
+  display: block;
+  cursor: pointer; /* Cambia el cursor a la manita */
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+/* Mostrar el menú cuando se hace hover en el dropdown */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Botón LOGIN con ícono de despliegue */
+header .login-btn {
+  background-color: var(--orange);
+  color: var(--white);
+  border: none;
+  padding: 5px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  position: relative;
+  font-weight: bold;
+}
+
+/* Agregar flecha ▼ al lado derecho del botón */
+header .login-btn::after {
+  content: ' ▼';
+  font-size: 0.8rem;
+  margin-left: 5px;
+}
+
+/* Hover del botón ADMIN */
+header .login-btn:hover {
+  background-color: #e5941e;
+}
+
+
+
+/* Hover del botón ADMIN */
+header .cerrarSesion:hover {
+    font-size: 0.8rem;
+  background-color: #c5c9a9;
+}

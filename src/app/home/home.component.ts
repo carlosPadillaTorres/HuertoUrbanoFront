@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterLink } from '@angular/router';
+import { Footer } from "../footer/footer";
 
 @Component({
   selector: 'app-home',
@@ -10,8 +11,9 @@ import { RouterLink } from '@angular/router';
   imports: [
     RouterLink,
     CommonModule,
-    NgbCarouselModule
-  ],
+    NgbCarouselModule,
+    Footer
+],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })

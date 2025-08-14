@@ -58,11 +58,11 @@
             <input type="text" id="empresa" name="empresa" [(ngModel)]="empresa" required>
           </div>
 
-          <div class="form-group">
+         <!-- <div class="form-group">
             <label for="fechaRegistro">Fecha de Registro:</label>
             <input type="date" id="fechaRegistro" name="fechaRegistro" [(ngModel)]="fechaRegistro" required
               [readonly]="true">
-          </div>
+          </div>-->
 
           <div class="form-group">
             <label for="telefono">Teléfono:</label>
@@ -89,9 +89,9 @@
 
           <div class="form-group">
             <label for="ciudad">Ciudad:</label>
-            <select id="ciudad" name="ciudad" [(ngModel)]="selectedCiudad" required>
+            <select id="ciudad" name="ciudad" [(ngModel)]="selectedCiudad"  required>
               <option value="">Seleccione una ciudad</option>
-              <option *ngFor="let ciudad of ciudades" [value]="ciudad">{{ ciudad?.nombreCiudad }}</option>
+              <option *ngFor="let ciudad of ciudades" [value]="ciudad.idCiudad">{{ ciudad?.nombreCiudad }}</option>
             </select>
           </div>
 
@@ -296,7 +296,8 @@
       <br>
       <div class="centered-buttons">
         <button type="button" class="guardar" (click)="saveEditedProveedorNew(editNewProveedorForm)"
-          [disabled]="!editNewProveedorForm.form.valid">Actualizar</button>
+        >Actualizar</button>
+        <!--[disabled]="!editNewProveedorForm.form.valid">Actualizar</button>-->
         <button type="button" class="cancelar" (click)="closeEditModalNew()">Cancelar</button>
       </div>
     </div>

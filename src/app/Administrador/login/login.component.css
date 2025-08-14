@@ -148,6 +148,36 @@
     color: #999;
 }
 
+
+
+
+ .form-group {
+  flex: 0 0 calc(33.33% - 10px);
+  box-sizing: border-box;
+}
+
+ .form-group label {
+  display: block;
+  margin: 0 0 5px;
+  text-align: left;
+  font-weight: bold;
+  color: #333;
+}
+
+ .form-group input,
+ .form-group select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+ .form-group {
+    flex: 1 1 100%;
+  }
+
+
+
 .form-button {
     width: 100%;
     padding: 14px;

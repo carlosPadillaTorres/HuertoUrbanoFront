@@ -1,0 +1,70 @@
+<app-barra-navegacion-cliente></app-barra-navegacion-cliente>
+
+<main class="main-content">
+  <div class="section">
+    <h2>Categorías de Productos</h2>
+
+    <div class="mt-2 categories">
+      @for (cat of categorias; track cat.idCategoria){
+        <div class="category-card"  [class.selected]="categoriaSeleccionada === cat.tipo"
+          (click)="seleccionarCategoria(cat.tipo)">
+          {{ cat.nombre }}
+        </div>
+    }
+    </div>
+
+    <div class="products-list">
+      @if( productosFiltrados.length === 0) {
+        <div class="no-products">No hay productos disponibles en esta categoría.</div>
+      }
+      @for (producto of productosFiltrados; track producto.idProducto){
+        <div class="product-card" (click)="mostrarDetalle(producto)">
+          <img src="https://via.placeholder.com/100" [alt]="producto.nombreProducto">
+          <div class="product-info">
+            <div class="title">{{ producto.nombreProducto }}</div>
+            <div class="details">{{ producto.descripcion }}</div>
+          </div>
+          <div class="price">${{ producto.costoUnidad }}</div>
+        </div>
+      }
+    </div>
+  </div>
+  <app-carrito> </app-carrito>
+
+</main>
+
+
+
+<!-- Modal Detalle -->
+@if (mostrarModal) {
+<div class="modal">
+  <div class="modal-content">
+    <h4 class="title mb-4">Detalle del componente</h4>
+    <span class="close" (click)="cerrarModal()">&times;</span>
+    <div class="product-details">
+      <div class="product-image">
+        <img src="https://via.placeholder.com/200" [alt]="productoSeleccionado?.nombreProducto">
+      </div>
+      <div class="product-info">
+        <div class="title" style="font-weight: bold;">{{ productoSeleccionado?.nombreProducto }}</div>
+        <div class="description">{{ productoSeleccionado?.descripcion }}</div>
+        <div class="cost">Costo unitario: ${{ productoSeleccionado?.costoUnidad }}</div>
+      </div>
+    </div>
+    <br>
+    <div class="product-carrito">
+      <div class="product-info">
+        <div class="quantity-selector">
+          <label>Seleccione la cantidad para agregar al carrito</label>
+          <input type="number" value="1" min="1" #cantidadInput>
+          <button (click)="agregarAlCarrito(productoSeleccionado!, cantidadInput.valueAsNumber)">Agregar al carrito</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+}
+
+<app-footer></app-footer>
+

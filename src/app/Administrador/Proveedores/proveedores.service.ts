@@ -1,18 +1,20 @@
 import { Injectable } from '@angular/core';
-import { Proveedores } from './proveedores';
 import { Proveedor } from '../../Models/ProveedorModel';
+import { CreateProveedorDto, UpdateProveedorDto } from '../../DTO/ProveedorDto';
 import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../enviroments/enviroment';
 
 @Injectable({
   providedIn: 'any'
 })
 export class ProveedoresService {
-  url = "http://localhost:5269/Proveedor/";
-  constructor() {
+  url = environment.backUrl+"Proveedor/";
+  constructor(private http: HttpClient) {
   }
 
 
-  async getProveedores(): Promise<Proveedor[]>{
+  /*async getProveedores(): Promise<Proveedor[]>{
     const data = await fetch(`${this.url}obtenerProveedores`);
     const rawText = await data.text();
 
@@ -23,10 +25,10 @@ export class ProveedoresService {
       console.error('No se pudo convertir a JSON:', e);
       return [];
     }
-    /*const data = await fetch(`${this.url}obtenerProveedores`);
-    console.log('DATA: ',data.body);
-    return await data.json() ?? [];
-    //return this.http.get<Proveedor>(`${this.url}obtenerProveedores`)*/
+  }*/
+
+ getProveedores(): Observable<Proveedor[]> {
+    return this.http.get<Proveedor[]>(`${this.url}obtenerProveedores`);
   }
 
   async getProveedoresPorId(id : Number): Promise<Proveedor | undefined> {
@@ -36,14 +38,13 @@ export class ProveedoresService {
 
 
   // Método para registrar un proveedor
-  async registrarProveedor(proveedor: RegistrarProveedorRequest): Promise<any> {
+  async registrarProveedor(proveedor: CreateProveedorDto): Promise<any> {
     try {
       const response = await fetch(`${this.url}registrarProveedor`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          // Agregar aquí headers adicionales como Authorization si es necesario
           // 'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(proveedor)
@@ -72,14 +73,14 @@ export class ProveedoresService {
   }
 
   // Método para actualizar un proveedor
-  async actualizarProveedor(proveedor: Proveedor): Promise<any> {
+  async actualizarProveedor(proveedor: UpdateProveedorDto): Promise<any> {
     try {
+       proveedor.domicilio.ciudad = null;
       const response = await fetch(`${this.url}actualizarProveedor`, {
         method: 'PUT', // o PATCH dependiendo de tu API
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          // Agregar aquí headers adicionales como Authorization si es necesario
           // 'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(proveedor)
@@ -107,27 +108,77 @@ export class ProveedoresService {
     }
   }
 
-  // Método alternativo usando async/await con manejo de errores más específico
-  async registrarProveedorConValidacion(proveedor: RegistrarProveedorRequest): Promise<any> {
-    // Validaciones básicas antes de enviar
-    if (!proveedor.empresa.trim()) {
+
+  // Método para eliminar (lógicamente) un proveedor
+  async eliminarProveedor(idProveedor: number): Promise<any> {
+    try {
+      const response = await fetch(`${this.url}eliminarProveedor?id=${idProveedor}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          // 'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return {
+        success: true,
+        data: data,
+        message: 'Proveedor eliminado exitosamente'
+      };
+
+    } catch (error) {
+      console.error('Error al eliminar proveedor:', error);
       return {
         success: false,
-        message: 'El nombre de la empresa es requerido',
-        errors: ['Empresa requerida']
+        message: error instanceof Error ? error.message : 'Error desconocido',
+        errors: [error instanceof Error ? error.message : 'Error desconocido']
       };
     }
-
-    if (!proveedor.email.includes('@')) {
-      return {
-        success: false,
-        message: 'El email no tiene un formato válido',
-        errors: ['Email inválido']
-      };
-    }
-
-    return await this.registrarProveedor(proveedor);
   }
+
+
+  // Método para activar un proveedor
+  async reactivarProveedor(idProveedor: number): Promise<any> {
+    try {
+      const response = await fetch(`${this.url}reactivarProveedor?id=${idProveedor}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          // 'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return {
+        success: true,
+        data: data,
+        message: 'Proveedor eliminado exitosamente'
+      };
+
+    } catch (error) {
+      console.error('Error al eliminar proveedor:', error);
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : 'Error desconocido',
+        errors: [error instanceof Error ? error.message : 'Error desconocido']
+      };
+    }
+  }
+
+
 }
 
 // Interfaces para los tipos de datos
@@ -149,7 +200,7 @@ interface DomicilioDto {
   numero: string;
   colonia: string;
   codigoPostal: string;
-  idCiudad: Number;
+  idCiudad: number;
   ciudad: CiudadDto;
 }
 

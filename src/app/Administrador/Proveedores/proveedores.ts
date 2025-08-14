@@ -11,6 +11,7 @@ import { EstadoService } from '../../ServiciosGlobales/EstadoService';
 import { Estado } from '../../Models/EstadoModel';
 import { CiudadService } from '../../ServiciosGlobales/CiudadService';
 import { Ciudad } from '../../Models/CiudadModel';
+import { CreateProveedorDto } from '../../DTO/ProveedorDto';
 
 @Component({
   selector: 'app-proveedores',
@@ -26,18 +27,31 @@ export class Proveedores implements OnInit {
   ciudades: Ciudad[] = [];
 
   servicioProveedor: ProveedoresService = inject(ProveedoresService);
-  servicioEstado: EstadoService = inject(EstadoService)
-  servicioCiudad: CiudadService = inject(CiudadService)
+  servicioEstado: EstadoService = inject(EstadoService);
+  servicioCiudad: CiudadService = inject(CiudadService);
 
   constructor(private router: Router) {
   }
 
-  ngOnInit(): void {
-    this.servicioProveedor.getProveedores().then((listaProveedores: Proveedor[]) => {
-      this.todosLosProveedores = listaProveedores;
-      //this.filtrarProveedores();
-      this.proveedoresMostrados = this.todosLosProveedores;
+cargarProveedores(): void {
+    this.servicioProveedor.getProveedores().subscribe({
+      next: (resultado) => {
+        this.todosLosProveedores = resultado ?? [];
+        this.proveedoresMostrados = this.todosLosProveedores;
+      },
+      error: (error) => {
+        console.error("Error cargando proveedores:", error);
+      }
     });
+  }
+
+  ngOnInit(): void {
+    this.cargarProveedores();
+    /*this.servicioProveedor.getProveedores().then((listaProveedores: Proveedor[]) => {
+      this.todosLosProveedores = listaProveedores;
+      this.proveedoresMostrados = this.todosLosProveedores;
+      this.filtrarProveedores();
+    });*/
 
     this.servicioEstado.getEstados().then((listaEstados: Estado[]) => {
       this.estados = listaEstados;
@@ -61,7 +75,7 @@ export class Proveedores implements OnInit {
   selectedProveedor: any | null = null;
 
   selectedEstadoId: string = '';
-  selectedCiudad: string = '';
+  selectedCiudad: number = 0;
 
   empresa: string = '';
   fechaRegistro: string = new Date().toISOString().substring(0, 10);
@@ -82,7 +96,6 @@ export class Proveedores implements OnInit {
   filtrarProveedores() {
     this.proveedoresMostrados = this.todosLosProveedores.filter(prov => {
       return this.mostrarActivos ? prov.estatus === true : prov.estatus === false;
-      // return this.mostrarActivos ? prov.estatus === '1' : prov.estatus === '0';
     });
   }
 
@@ -115,7 +128,7 @@ export class Proveedores implements OnInit {
     this.colonia = '';
     this.codigoPostal = '';
     this.selectedEstadoId = '';
-    this.selectedCiudad = '';
+    this.selectedCiudad = 0;
     this.ciudades = [];
   }
 
@@ -123,9 +136,8 @@ export class Proveedores implements OnInit {
   updateCiudades() {
     const estadoIdNum = parseInt(this.selectedEstadoId);
     this.ciudades = this.todasLasCiudades.filter(c => c.estado.idEstado === estadoIdNum);
-    this.selectedCiudad = '';
+    this.selectedCiudad = 0;
   }
-
 
 
 
@@ -145,32 +157,24 @@ export class Proveedores implements OnInit {
 
       try {
         // Crear el objeto para registrar el proveedor
-        const newProveedor: RegistrarProveedorRequest = {
+        const newProveedor: CreateProveedorDto = {
           empresa: this.empresa,
           email: this.email,
           telefono: this.telefono,
           rfc: this.rfc,
-          estatus: this.estatus === '1',
           domicilio: {
             idDomicilio: 0,
             calle: this.calle,
             numero: this.numero.toString(), // Convertir a string según tu API
             colonia: this.colonia,
             codigoPostal: this.codigoPostal,
-            idCiudad: new Number(this.selectedCiudad) || 0, // Usar la ciudad seleccionada
-            ciudad: {
-              idCiudad: 0,
-              nombreCiudad: "",
-              idEstado: 0,
-              estado: {
-                idEstado: 0,
-                nombreEstado: ""
-              }
-            }
+            idCiudad: parseInt(this.selectedCiudad.toString()) | 0, // Usar la ciudad seleccionada
+            ciudad: null // No es necesario enviar el objeto Ciudad completo
           }
         };
 
         // Llamar al servicio para registrar el proveedor
+        console.log('Registrar Proveedor:', newProveedor);
         const resultado = await this.servicioProveedor.registrarProveedor(newProveedor);
 
         if (resultado.success) {
@@ -221,8 +225,8 @@ export class Proveedores implements OnInit {
       // Formulario inválido
       await Swal.fire({
         icon: 'warning',
-        title: 'Formulario incompleto',
-        text: 'Por favor, complete todos los campos requeridos correctamente.',
+        title: 'Formulario inválido',
+        text: 'Campos con errores:'+ Object.keys(this.getFormErrors(form)),
         confirmButtonColor: '#ffc107',
         confirmButtonText: 'Revisar'
       });
@@ -232,7 +236,7 @@ export class Proveedores implements OnInit {
         form.controls[key].markAsTouched();
       });
 
-      console.log('Formulario inválido. Campos con errores:', this.getFormErrors(form));
+      console.log('Formulario inválido. Campos con errores:', Object.keys(this.getFormErrors(form)));
     }
   }
   // Método auxiliar para obtener errores del formulario
@@ -274,10 +278,8 @@ export class Proveedores implements OnInit {
 
   // ---modal de EDITAR ---
   openEditModalNew(proveedor: Proveedor) {
-    console.log('Prov: ', proveedor);
     this.isEditModalNewOpen = true;
     this.editNewForm = { ...proveedor };
-    console.log('DomicilioProv: ', this.editNewForm.domicilio);
     this.updateCiudadesForEditNew();
   }
 
@@ -351,12 +353,13 @@ export class Proveedores implements OnInit {
         const resultado = await this.servicioProveedor.actualizarProveedor({
           ...this.editNewForm,
           fechaRegistro: this.getFechaRegistroForInput(), // string "YYYY-MM-DD"
-          fechaTermino: this.editNewForm.fechaTermino
+          fechaTermino: null,
+            /*fechaTermino: this.editNewForm.fechaTermino
             ? formatStringToDateForInput(this.editNewForm.fechaTermino.toString())
-            : '',
+            : '',*/
           domicilio: {
             ...this.editNewForm.domicilio,
-            numero: new Number(this.editNewForm.domicilio.numero.toString()) // <-- asegúrate que es string
+            numero: (this.editNewForm.domicilio.numero.toString()) // <-- asegúrate que es string
           }
         });
 
@@ -396,19 +399,20 @@ export class Proveedores implements OnInit {
         });
       }
     } else {
+
       await Swal.fire({
         icon: 'warning',
-        title: 'Formulario incompleto',
-        text: 'Por favor, complete todos los campos requeridos correctamente.',
+        title: 'Formulario inválido',
+        text: 'Campos con errores: '+ Object.keys(this.getFormErrors(form)),
         confirmButtonColor: '#ffc107',
         confirmButtonText: 'Revisar'
       });
+      console.log('Formulario de edición inválido. Campos con errores:', this.getFormErrors(form));
 
       Object.keys(form.controls).forEach(key => {
         form.controls[key].markAsTouched();
       });
 
-      console.log('Formulario de edición inválido. Campos con errores:', this.getFormErrors(form));
     }
   }
 
@@ -425,32 +429,76 @@ export class Proveedores implements OnInit {
 
   // ---ELIMINAR---
   eliminarProveedor(proveedor: any) {
-    const index = this.todosLosProveedores.findIndex(p => p.rfc === proveedor.rfc);
-    if (index !== -1) {
-      this.todosLosProveedores[index].estatus = false;
-      //this.todosLosProveedores[index].estatus = '0';
-      console.log('Proveedor eliminado (estatus cambiado a 0):', this.todosLosProveedores[index]);
-      this.filtrarProveedores();
-
-      if (this.isViewModalOpen && this.selectedProveedor && this.selectedProveedor.rfc === proveedor.rfc) {
-        this.closeViewModal();
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: `¿Deseas eliminar el proveedor ${proveedor.empresa}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const response = await this.servicioProveedor.eliminarProveedor(proveedor.idProveedor);
+        if (response.success) {
+          Swal.fire({
+            icon: 'success',
+            title: '¡Eliminado!',
+            text: response.message,
+            confirmButtonColor: '#28a745',
+            confirmButtonText: 'Aceptar'
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al eliminar',
+            text: response.message,
+            confirmButtonColor: '#dc3545',
+            confirmButtonText: 'Entendido'
+          });
+        }
       }
-      if (this.isEditModalNewOpen && this.editNewForm.rfc === proveedor.rfc) {
-        this.closeEditModalNew();
-      }
-    }
+    });
+    this.filtrarProveedores();
   }
 
-  // --- Activar
+  // ---REACTIVARF---
   activarProveedor(proveedor: any) {
-    const index = this.todosLosProveedores.findIndex(p => p.rfc === proveedor.rfc);
-    if (index !== -1) {
-      this.todosLosProveedores[index].estatus = true;
-      //this.todosLosProveedores[index].estatus = '1';
-      console.log('Proveedor activado (estatus cambiado a 1):', this.todosLosProveedores[index]);
-      this.filtrarProveedores();
-    }
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: `¿Deseas reactivar el proveedor ${proveedor.empresa}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Sí, reactivar',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const response = await this.servicioProveedor.reactivarProveedor(proveedor.idProveedor);
+        if (response.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Reactivado!',
+            text: response.message,
+            confirmButtonColor: '#28a745',
+            confirmButtonText: 'Aceptar'
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error al reactivar',
+            text: response.message,
+            confirmButtonColor: '#dc3545',
+            confirmButtonText: 'Entendido'
+          });
+        }
+      }
+    });
+    this.filtrarProveedores();
   }
+
 
   getFechaRegistroForInput(): string {
     return formatStringToDateForInput(this.editNewForm.fechaRegistro.toString());
