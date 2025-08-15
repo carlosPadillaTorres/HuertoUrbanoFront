@@ -1,1 +1,80 @@
-<p>compra-producto works!</p>
+<app-barra-navegacion></app-barra-navegacion>
+
+<main class="main-content">
+  <div class="page-header-with-back">
+    <h1>Registro de compra a proveedor</h1>
+  </div>
+  @if(productosDisponibles.length > 0){
+  <div>
+    <p>Mostrando productos para el proveedor <strong>{{ proveedorId }}</strong></p>
+
+    <div class="table-container">
+      <table id="productosTable">
+        <thead>
+          <tr>
+            <th>Nombre del Producto</th>
+            <th>Marca</th>
+            <th>Tipo</th>
+            <th>Existencia</th>
+            <th>Costo</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(producto of productosDisponibles; track producto.idProducto){
+          <tr>
+            <td>{{ producto.nombreProducto }}</td>
+            <td>{{ producto.marca }}</td>
+            <td>{{ producto.tipo }}</td>
+            <td>{{ producto.cantidadTotal }}</td>
+            <td>${{ producto.costoUnidad }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="registro-compra-container">
+      <h2>Registrar compra</h2>
+      <form #compraForm="ngForm" (ngSubmit)="registrarCompra(compraForm)">
+        <div class="form-group">
+          <label for="fechaCompra">Fecha de compra:</label>
+          <input type="datetime-local" id="fechaCompra" name="fechaCompra" [(ngModel)]="fechaCompra" required>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Cantidad a comprar</th>
+              <th>Precio Unitario</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(producto of productosDisponibles; track producto.idProducto){
+            <tr>
+              <td>{{ producto.nombreProducto }}</td>
+              <td>
+                <input type="number" min="0" [(ngModel)]="detallesCompra[producto.idProducto].cantidad"
+                  name="cantidad_{{producto.idProducto}}">
+              </td>
+              <td>
+                <input type="number" min="0" step="0.01"
+                  [(ngModel)]="detallesCompra[producto.idProducto].precioUnitario"
+                  name="precio_{{producto.idProducto}}">
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+        <button type="submit" [disabled]="!compraForm.form.valid">Registrar compra</button>
+      </form>
+    </div>
+  </div>
+  }
+  @if(productosDisponibles.length === 0){
+  <div>
+    <p>No hay productos disponibles para este proveedor.</p>
+  </div>
+  }
+</main>
+
+<app-footer></app-footer>

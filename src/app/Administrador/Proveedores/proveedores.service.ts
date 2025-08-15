@@ -29,6 +29,9 @@ export class ProveedoresService {
   }*/
 
  getProveedores(): Observable<Proveedor[]> {
+  const tokenUsed = GestorSesion.getToken()
+  console.log("token: " + tokenUsed);
+
   const encabezados = new HttpHeaders({
       'Authorization': `Bearer ${GestorSesion.getToken()}`
     });

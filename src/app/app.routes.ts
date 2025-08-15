@@ -10,6 +10,7 @@ import { DetalleClienteComponente } from './Administrador/Clientes/DetalleClient
 import { ProductoClienteComponent } from './Cliente/producto.component/producto.component';
 import { VentaComponent } from './Cliente/venta.component/venta.component';
 import { VentasClienteComponent } from './Cliente/ventas-cliente.component/ventas-cliente.component';
+import { CompraProducto } from './Administrador/compra-producto/compra-producto';
 
 export const routes: Routes = [
   // principal
@@ -33,6 +34,8 @@ export const routes: Routes = [
 
   { path: 'carrito', component: VentaComponent},
 
-  { path: 'misCompras', component: VentasClienteComponent }
+  { path: 'misCompras', component: VentasClienteComponent },
+
+  { path: 'admin/compras', component: CompraProducto}
 
 ];
