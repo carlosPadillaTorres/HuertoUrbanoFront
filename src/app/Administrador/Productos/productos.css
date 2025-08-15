@@ -508,3 +508,66 @@ footer {
     margin-right: 0;
   }
 }
+
+
+
+
+/* Botón flotante carrito */
+.floating-cart-btn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  background: #43a047;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+  cursor: pointer;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.floating-cart-btn:hover {
+  background: #388e3c;
+}
+
+/* Botón agregar a compra */
+.add-to-cart-btn {
+  background: #00bcd4;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+.add-to-cart-btn:hover {
+  background: #008ba3;
+}
+
+/* Modal de compra scrolleable */
+.compra-modal-content {
+  max-height: 90vh;
+  overflow-y: auto;
+  width: 95%;
+  max-width: 600px;
+}
+
+.compra-lista-scroll {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
+
+.centered-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 18px;
+}

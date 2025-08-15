@@ -7,7 +7,6 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { environment, session } from '../../../enviroments/enviroment';
-import { jwtDecode } from 'jwt-decode';
 import { GestorSesion } from '../../ServiciosGlobales/GestorSesion';
 import { Cliente } from '../../Models/ClienteModel';
 import { Ciudad } from '../../Models/CiudadModel';
@@ -105,15 +104,33 @@ export class LoginComponent implements OnInit {
 
     if (form.valid) {
       this.http.post<{ token: string }>(environment.backUrl + 'inicioSesion', {
-        withCredentials: true,
         nombreUsuario: this.loginData.email,
         contrasenia: this.loginData.password
       }).subscribe(
         (data) => {
           GestorSesion.setToken(data.token);
-          console.log("tok: ", GestorSesion.getDatosToken());
-          console.log(session.token);
-          this.router.navigate(['/dashboard'])
+          var usuario = GestorSesion.getDatosToken();
+          if (usuario) {
+            switch ((usuario.rol).toString()) {
+              case 'ADMS':
+                this.router.navigate(['/dashboard']);
+                break;
+              case 'CLIE':
+                this.router.navigate(['/']);
+                break;
+              case 'EMPL':
+                this.router.navigate(['/dashboard'])
+                break;
+              default:
+                console.log("Error al obtener el rol del usuario");
+                console.warn("Error al obtener el rol del usuario");
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: "No se obtuvo el tipo de usuario que ingresa. Intente de nuevo"
+                });
+            }
+          }
         },
         (error) => {
           console.log("Error: ", error.statusText);
@@ -124,6 +141,12 @@ export class LoginComponent implements OnInit {
           });
         }
       );
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Complete los campos!"
+      });
     }
   }
 

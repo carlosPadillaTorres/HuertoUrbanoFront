@@ -1,14 +1,14 @@
 import { Component, inject } from '@angular/core';
-import { BarraNavegacionCliente } from "../barra-navegacion/barra-navegacion";
 import { Footer } from "../../footer/footer";
 import { VentaService } from './venta.service';
 import Swal from 'sweetalert2';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { BarraNavegacion } from "../../Administrador/barra-navegacion/barra-navegacion";
 
 @Component({
   selector: 'app-venta.component',
-  imports: [BarraNavegacionCliente, Footer],
+  imports: [ Footer, BarraNavegacion],
   templateUrl: './venta.component.html',
   styleUrl: './venta.component.css'
 })

@@ -1,4 +1,3 @@
-
 <header>
   <div class="brand">
     <div class="logo">
@@ -8,10 +7,20 @@
   </div>
   <nav>
     <a href="#nosotros">Nosotros</a>
-    <a href="#productos">Productos</a>
-    <a href="#asesorias">Asesorías</a>
+    <a href="/productos">Productos</a>
+    <a href="#contacto">Contacto</a>
   </nav>
+  @if(obtenerNombreUsuario()){
+
+  <div class="dropdown">
+    <button class="login-btn">{{obtenerNombreUsuario()}}</button>
+    <div class="dropdown-content">
+      <a class="cerrarSesion" (click)="llamarCerrarSesion()">Cerrar Sesión</a>
+    </div>
+  </div>
+  }@else{
   <button class="login-btn" (click)="goToLogin()">Iniciar Sesión</button>
+  }
 </header>
 
 <main class="main-content">
@@ -29,20 +38,26 @@
     <div class="cards-container">
       <div class="info-card">
         <h3>Nuestra Misión</h3>
-        <p>Desarrollar e implementar sistemas embebidos innovadores y eficientes que mejoren el rendimiento y la funcionalidad de una amplia gama de dispositivos, satisfaciendo las necesidades específicas de nuestros clientes. </p>
+        <p>Desarrollar e implementar sistemas embebidos innovadores y eficientes que mejoren el rendimiento y la
+          funcionalidad de una amplia gama de dispositivos, satisfaciendo las necesidades específicas de nuestros
+          clientes. </p>
       </div>
 
       <div class="info-card">
         <h3>Nuestra Visión</h3>
-        <p>Ser reconocidos como líderes en la industria de sistemas embebidos en México, destacándonos por nuestra capacidad de innovación, calidad y compromiso con la excelencia. </p>
+        <p>Ser reconocidos como líderes en la industria de sistemas embebidos en México, destacándonos por nuestra
+          capacidad de innovación, calidad y compromiso con la excelencia. </p>
       </div>
 
-      <div class="info-card special-scroll-card"> <h3>Nuestros Valores</h3>
+      <div class="info-card special-scroll-card">
+        <h3>Nuestros Valores</h3>
         <ul>
           <li>Innovación: Fomentamos la creatividad y la búsqueda constante de nuevas soluciones tecnológicas. </li>
-          <li>Calidad: Nos comprometemos a entregar productos y servicios que cumplan con los más altos estándares de calidad. </li>
+          <li>Calidad: Nos comprometemos a entregar productos y servicios que cumplan con los más altos estándares de
+            calidad. </li>
           <li>Colaboración: Trabajamos en equipo con nuestros clientes y socios para alcanzar objetivos comunes.</li>
-          <li>Responsabilidad: Asumimos nuestras acciones y nos esforzamos por superar las expectativas de nuestros clientes. </li>
+          <li>Responsabilidad: Asumimos nuestras acciones y nos esforzamos por superar las expectativas de nuestros
+            clientes. </li>
           <li>Integridad: Actuamos con honestidad y transparencia en todas nuestras operaciones. </li>
         </ul>
       </div>

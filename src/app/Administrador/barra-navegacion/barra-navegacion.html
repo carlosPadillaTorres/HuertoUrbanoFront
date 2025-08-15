@@ -6,10 +6,34 @@
     <div class="brand-text">TechGuardian Solutions</div>
   </div>
   <nav>
+    @if(obtenerRolUsuario()==='AMDS'){
     <a routerLink="/dashboard">Dashboard</a>
     <a routerLink="/empleados">Empleados</a>
     <a routerLink="/proveedores">Proveedores</a>
+    <!--<a routerLink="/admin/clientes">Clientes</a>-->
+    <a routerLink="/admin/compras">Compras</a>
+    <a routerLink="/admin/productos">Productos</a>
+    }
+    @else if(obtenerRolUsuario()==='CLIE'){
+    <a routerLink="/productos">Productos</a>
+    <a routerLink="/comprados">Mis compras</a>
+    <a routerLink="/productos">Productos</a>
+    <a routerLink="/empleados">Empleados</a>
+    }
+    @else if(obtenerRolUsuario()==='EMPL'){
+    <a routerLink="/dashboard">Dashboard</a>
+    <a routerLink="/proveedores">Proveedores</a>
     <a routerLink="/admin/clientes">Clientes</a>
+    <a routerLink="#">Asesorías</a>
+    <a routerLink="/admin/productos">Productos</a>
+    }@else{
+      <!--<h5>No se pudo determinar su usuario. Inicie sesión de nuevo</h5>-->
+      <a routerLink="/dashboard">Dashboard</a>
+    <a routerLink="/empleados">Empleados</a>
+    <a routerLink="/proveedores">Proveedores</a>
+    <a routerLink="/admin/compras">Compras</a>
+    <a routerLink="/admin/productos">Productos</a>
+    }
   </nav>
 
   <div class="dropdown">

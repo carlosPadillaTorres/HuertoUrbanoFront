@@ -6,17 +6,26 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { BarraNavegacion } from '../barra-navegacion/barra-navegacion';
 import { ConsultaProductoService } from '../../ServiciosGlobales/ConsultaProductosService';
 import { Producto } from '../../Models/ProductoModel';
+import { CompraProductoService } from '../compra-producto/compra-producto-service';
+import Swal from 'sweetalert2';
+import { Footer } from "../../footer/footer";
+
 
 @Component({
   selector: 'app-productos',
   standalone: true,
-  imports: [CommonModule, FormsModule, BarraNavegacion],
+  imports: [CommonModule, FormsModule, BarraNavegacion, Footer],
   templateUrl: './productos.html',
   styleUrls: ['./productos.css']
 })
 export class ProductosComponent implements OnInit {
 
-  rfcProveedor: string | null = null;
+   isCompraModalOpen: boolean = false;
+  detallesCompra: { [productoId: number]: { cantidad: number, precioUnitario: number, nombreProducto: string } } = {};
+  fechaCompra: string = new Date().toISOString().substring(0, 16);
+
+
+  idProveedor: string | null = null;
   nombreEmpresa: string | null = null;
 
   productosMostrados: Producto[] = [];
@@ -28,15 +37,17 @@ export class ProductosComponent implements OnInit {
   editFormProduct: any | null = null;
 
   isAddModalOpen: boolean = false;
-  newProduct: any = {
+  newProduct: Producto = {
+    idProducto: 0,
+    idProveedor: 0,
     nombreProducto: '',
     marca: '',
     tipo: '',
     cantidadTotal: 0,
-    costoUnidad: 0,
     descripcion: '',
-    rfcProveedor: '',
-    estatus: '1'
+    costoUnidad: 0,
+    proveedor: undefined,
+    estatus: true
   };
 
   todosLosProductos: Producto[] = [];
@@ -44,16 +55,14 @@ export class ProductosComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private consultaProductoService: ConsultaProductoService
+    private consultaProductoService: ConsultaProductoService,
+    private compraProductoService: CompraProductoService
   ) { }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
-      this.rfcProveedor = params['rfcProveedor'] || null;
+      this.idProveedor = params['idProveedor'] || null;
       this.nombreEmpresa = params['nombreEmpresa'] || null;
-      if (this.rfcProveedor) {
-        this.newProduct.rfcProveedor = this.rfcProveedor;
-      }
       this.cargarProductos();
     });
   }
@@ -65,7 +74,7 @@ export class ProductosComponent implements OnInit {
         this.filtrarProductosPorProveedor();
       },
       error: (err) => {
-        console.error('Error al obtener productos reales:', err);
+        console.error('Error al obtener productos :', err);
         this.todosLosProductos = [];
         this.productosMostrados = [];
       }
@@ -73,17 +82,14 @@ export class ProductosComponent implements OnInit {
   }
 
   filtrarProductosPorProveedor() {
-    if (this.rfcProveedor) {
+    if (this.idProveedor) {
       this.productosMostrados = this.todosLosProductos.filter(
-        producto => {
-          const proveedorRFC = producto.proveedor?.rfc;
-          return proveedorRFC === this.rfcProveedor && producto.estatus === this.mostrarActivos;
-        }
+        producto => String(producto.idProveedor) === String(this.idProveedor) && producto.estatus === this.mostrarActivos
       );
-      console.log(`Productos para el proveedor con RFC: ${this.rfcProveedor} (Activos: ${this.mostrarActivos})`, this.productosMostrados);
+      console.log(`Productos para el proveedor con id: ${this.idProveedor} (Activos: ${this.mostrarActivos})`, this.productosMostrados);
     } else {
       this.productosMostrados = [];
-      console.log('No se proporcionó RFC de proveedor en la URL.');
+      console.log('No se proporcionó idProveedor en la URL.');
     }
   }
 
@@ -142,7 +148,7 @@ export class ProductosComponent implements OnInit {
   eliminarProducto(producto: any) {
     const index = this.todosLosProductos.findIndex(p => p.idProducto === producto.idProducto);
     if (index !== -1) {
-  this.todosLosProductos[index].estatus = false;
+      this.todosLosProductos[index].estatus = false;
       console.log('Producto marcado como eliminado (inactivo):', this.todosLosProductos[index]);
       this.filtrarProductosPorProveedor();
 
@@ -160,7 +166,7 @@ export class ProductosComponent implements OnInit {
   activarProducto(producto: any) {
     const index = this.todosLosProductos.findIndex(p => p.idProducto === producto.idProducto);
     if (index !== -1) {
-  this.todosLosProductos[index].estatus = true;
+      this.todosLosProductos[index].estatus = true;
       console.log('Producto activado:', this.todosLosProductos[index]);
       this.filtrarProductosPorProveedor();
     } else {
@@ -170,16 +176,7 @@ export class ProductosComponent implements OnInit {
 
   openAddModal() {
     this.isAddModalOpen = true;
-    this.newProduct = {
-      nombreProducto: '',
-      marca: '',
-      tipo: '',
-      cantidadTotal: 0,
-      costoUnidad: 0,
-      descripcion: '',
-      rfcProveedor: this.rfcProveedor || '',
-      estatus: '1'
-    };
+    this.inicializarFormulario();
   }
 
   saveNewProduct(form: NgForm) {
@@ -196,18 +193,24 @@ export class ProductosComponent implements OnInit {
     }
   }
 
-  closeAddModal() {
-    this.isAddModalOpen = false;
-    this.newProduct = {
+inicializarFormulario(){
+  this.newProduct = {
+      idProducto: 0,
+      idProveedor: 0,
       nombreProducto: '',
       marca: '',
       tipo: '',
       cantidadTotal: 0,
-      costoUnidad: 0,
       descripcion: '',
-      rfcProveedor: '',
-      estatus: '1'
+      costoUnidad: 0,
+      proveedor: undefined,
+      estatus: true
     };
+}
+
+  closeAddModal() {
+    this.isAddModalOpen = false;
+    this.inicializarFormulario();
   }
 
   // volver a la pagina de proveedores
@@ -215,9 +218,86 @@ export class ProductosComponent implements OnInit {
     this.router.navigate(['/proveedores']);
   }
 
-    //cerrar sesion
-  logout() {
-    console.log('Cerrando sesión...');
-    this.router.navigate(['/']);
+
+
+
+entero(v: string): any{
+  return parseInt(v);
+}
+
+  agregarACompra(producto: Producto) {
+    if (!this.detallesCompra[producto.idProducto]) {
+      this.detallesCompra[producto.idProducto] = {
+        cantidad: 1,
+        precioUnitario: producto.costoUnidad,
+        nombreProducto: producto.nombreProducto
+      };
+    } else {
+      this.detallesCompra[producto.idProducto].cantidad += 1;
+    }
+    Swal.fire({
+      icon: 'success',
+      title: 'Producto agregado',
+      text: `${producto.nombreProducto} agregado a la lista de compra.`
+    });
+  }
+
+  abrirCompraModal() {
+    this.isCompraModalOpen = true;
+  }
+
+  cerrarCompraModal() {
+    this.isCompraModalOpen = false;
+  }
+
+  eliminarDeCompra(productoId: number) {
+    delete this.detallesCompra[productoId];
+  }
+
+  registrarCompra(form: NgForm) {
+    const detalles = Object.entries(this.detallesCompra)
+      .filter(([_, d]) => d.cantidad > 0)
+      .map(([productoId, d]) => ({
+        productoId: Number(productoId),
+        cantidad: d.cantidad,
+        precioUnitario: d.precioUnitario
+      }));
+
+    if (detalles.length === 0) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Agrega al menos un producto con cantidad mayor a 0."
+      });
+      return;
+    }
+
+    const compra = {
+      proveedorId: this.idProveedor ? Number(this.idProveedor) : 0,
+      fechaCompra: new Date(this.fechaCompra).toISOString(),
+      detalles
+    };
+
+    this.compraProductoService.registrarCompra(compra).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: "success",
+          title: "Hecho",
+          text: "¡Compra registrada exitosamente!"
+        });
+        this.detallesCompra = {};
+        this.cerrarCompraModal();
+      },
+      error: () => {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "No se pudo registrar la compra."
+        });
+      }
+    });
   }
 }
+
+
+

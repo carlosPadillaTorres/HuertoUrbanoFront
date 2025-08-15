@@ -4,6 +4,8 @@ import { BarraNavegacion } from "../barra-navegacion/barra-navegacion";
 import { ConsultaProductoService } from '../../ServiciosGlobales/ConsultaProductosService';
 import { CompraProductoService } from './compra-producto-service';
 import { FormsModule, NgForm, NgModel } from '@angular/forms';
+import Swal from 'sweetalert2';
+import { error } from 'console';
 
 @Component({
   selector: 'app-compra-producto',
@@ -23,7 +25,7 @@ export class CompraProducto implements OnInit {
   constructor(
     private consultaProductoService: ConsultaProductoService,
     private compraProductoService: CompraProductoService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.consultaProductoService.obtenerProductos().subscribe(productos => {
@@ -48,7 +50,12 @@ export class CompraProducto implements OnInit {
       }));
 
     if (detalles.length === 0) {
-      alert('Debes agregar al menos un producto con cantidad mayor a 0.');
+      Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Debes agregar al menos un producto con cantidad mayor a 0.\n"
+          });
+
       return;
     }
 
@@ -60,14 +67,22 @@ export class CompraProducto implements OnInit {
 
     this.compraProductoService.registrarCompra(compra).subscribe({
       next: () => {
-        alert('¡Compra registrada exitosamente!');
+        Swal.fire({
+            icon: "success",
+            title: "Hecho",
+            text: "¡Compra registrada exitosamente!"
+          });
         // Limpia el formulario
         this.productosDisponibles.forEach(p => {
           this.detallesCompra[p.idProducto] = { cantidad: 0, precioUnitario: p.costoUnidad };
         });
       },
-      error: () => {
-        alert('Error al registrar la compra.');
+      error: (err) => {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Algo salió mal al registrar la compra. Intente de nuevo.\n"+err.mensaje
+          });
       }
     });
   }

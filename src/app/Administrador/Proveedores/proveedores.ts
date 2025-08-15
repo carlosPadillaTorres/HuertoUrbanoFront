@@ -419,7 +419,7 @@ cargarProveedores(): void {
 
   // --- ir a productos ---
   goToProductosByProveedor(proveedor: any) {
-    this.router.navigate(['/admin/productos'], { queryParams: { rfcProveedor: proveedor.rfc, nombreEmpresa: proveedor.empresa } });
+    this.router.navigate(['/admin/productos'], { queryParams: { idProveedor: proveedor.idProveedor, rfcProveedor: proveedor.rfc, nombreEmpresa: proveedor.empresa } });
   }
 
   getEstadoName(estadoId: number): String {

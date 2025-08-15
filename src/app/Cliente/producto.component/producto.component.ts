@@ -5,10 +5,11 @@ import { ConsultaProductoService } from '../../ServiciosGlobales/ConsultaProduct
 import { CarritoComponent } from "../carrito.component/carrito.component";
 import { Footer } from "../../footer/footer";
 import Swal from 'sweetalert2';
+import { BarraNavegacion } from "../../Administrador/barra-navegacion/barra-navegacion";
 
 @Component({
   selector: 'app-producto.component',
-  imports: [BarraNavegacionCliente, CarritoComponent, Footer],
+  imports: [BarraNavegacionCliente, CarritoComponent, Footer, BarraNavegacion],
   templateUrl: './producto.component.html',
   styleUrl: './producto.component.css'
 })

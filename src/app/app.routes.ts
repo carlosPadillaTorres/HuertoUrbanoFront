@@ -34,7 +34,7 @@ export const routes: Routes = [
 
   { path: 'carrito', component: VentaComponent},
 
-  { path: 'misCompras', component: VentasClienteComponent },
+  { path: 'comprados', component: VentasClienteComponent },
 
   { path: 'admin/compras', component: CompraProducto}
 
